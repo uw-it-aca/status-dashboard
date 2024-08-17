@@ -1,0 +1,18 @@
+version: '3.4'
+
+services:
+  app:
+    environment:
+      PORT: 8000
+      DASHBOARD_CONFIG_FILE: /app/example_config.yml
+      APPLICATION_INSTANCE: test
+      ENV: localdev
+    restart: always
+    container_name: app-dashboard
+    build:
+      context: .
+    volumes:
+      - ./status_dashboard:/app/status_dashboard
+      - ./example_config.yml:/app/example_config.yml
+    ports:
+      - "8000:8000"

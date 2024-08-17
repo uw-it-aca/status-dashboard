@@ -1,0 +1,29 @@
+#
+# dashboard config file
+#
+variables:
+  - name: application_instance
+    value: $APPLICATION_INSTANCE
+  - name: sample_period
+    value: 15m
+  - name: timezone
+    value: US/Pacific
+dashboards:
+  - app_name: My_App
+    app_path: my_app
+    # status page cache duration (optional: default is 5 minutes)
+    cache_duration: 1
+    application:
+      # list of application components and the test to determine their healthiness
+      - name: My_App
+        description: UW Campus Information Portal
+        link: https://my.uw.edu
+        test: (sum(increase(nginx_ingress_controller_requests{exported_service="myuw-prod-$application_instance",controller_class=~"k8s.io/ingress-nginx",namespace=~"ingress-nginx",status=~"5([^4].|4[^3])"}[$sample_period])) / sum(increase(nginx_ingress_controller_requests{exported_service="myuw-prod-$application_instance",controller_class=~"k8s.io/ingress-nginx",namespace=~"ingress-nginx"}[$sample_period])) > bool 0.0001)
+    dependencies:
+      # list of each dependent service and the test to determine its healthiness
+      - name: Student Web Service
+        desription: Service course and registration information
+        test: "foo"
+      - name: Person Web Service
+        desription: Service supplying person information
+        test: "foo"

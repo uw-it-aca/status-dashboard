@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}{{name}} Status Dashboard{% endblock %}
+{% block content %}
+<div class="header">
+  {{name}} Status Dashboard
+</div>
+<div class="container">
+  <div class="row">
+    <div class="status_title">Service Status</div>
+    {% for application in application_section %}
+    <div class="status">
+      <div class="description">
+        {{application.description}}
+      </div>
+      <div class="pill{% if application.nominal %} nominal{% endif %}">
+        <i class="fa {% if application.nominal %}fa-check{%else%}fa-exclamation-circle{% endif %}"></i>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="row">
+    <div class="status_title">Dependent Services Status</div>
+    {% for dependency in dependencies_section %}
+    <div class="status">
+      <div class="description">
+        {{dependency.name}}<br />
+        {{dependency.description}}
+      </div>
+      <div class="pill{% if dependency.nominal %} nominal{% endif %}">
+        <i class="fa {% if dependency.nominal %}fa-check{%else%}fa-exclamation-circle{% endif %}"></i>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="footer">
+    Updated: {{last_update}}
+  </div>
+</div>
+{% endblock %}
