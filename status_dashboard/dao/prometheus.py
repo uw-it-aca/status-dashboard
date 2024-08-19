@@ -24,24 +24,21 @@ class Prometheus:
             os.environ.get("ENV", "") == "localdev") else self.live_query
 
     def live_query(self, query):
-        return self._prometheus_api.custom_query(query)
-
-    def mock_query(self, query):
-        return choice([
-            [{'metric': {}, 'value': [1724025393.875, '0']}],
-            [{'metric': {}, 'value': [1724025393.875, '1']}],
-            [{'metric': {}, 'value': [1724025393.875, '1']}],
-            [{'metric': {}, 'value': [1724025393.875, '1']}]
-        ])
-
-    def boolean_query(self, query):
-        response = self.query(query)
+        response = self._prometheus_api.custom_query(query)
 
         logger.debug(f"query: '{query}' response: {response}")
 
-        # response should look like:
+        # query should sum metrics, so responses should look like:
         #      [{'metric': {}, 'value': [1724025393.875, '0']}]
-        if len(response) == 1:
-            return response[0]['value'][1] in ['1', 'NaN']
+        if len(response) < 2:
+            try:
+                return response[0]['value'][1]
+            except IndexError:
+                return "0"
+            except KeyError:
+                pass
 
         raise ValueError(f"unexpected response: {response}")
+
+    def mock_query(self, query):
+        return choice(['0.5', '0.9999', '0.9999', '0.9999'])

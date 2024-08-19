@@ -103,15 +103,20 @@ configmaps:
               description: UW Campus Information Portal
               link: https://my.uw.edu
               # query should return boolean: "1" is healthy, "0" is not so much
-              query: sum(increase(nginx_ingress_controller_requests{exported_service="myuw-prod-$application_instance",controller_class=~"k8s.io/ingress-nginx",namespace=~"ingress-nginx",status=~"([123]..|40[134]|499|543)"}[$sample_period])) / sum(increase(nginx_ingress_controller_requests{exported_service="myuw-prod-$application_instance",controller_class=~"k8s.io/ingress-nginx",namespace=~"ingress-nginx"}[$sample_period])) > bool 0.99
+              query: sum(increase(nginx_ingress_controller_requests{exported_service="myuw-prod-$application_instance",controller_class=~"k8s.io/ingress-nginx",namespace=~"ingress-nginx",status=~"([123]..|40[134]|499|543)"}[$sample_period])) / sum(increase(nginx_ingress_controller_requests{exported_service="myuw-prod-$application_instance",controller_class=~"k8s.io/ingress-nginx",namespace=~"ingress-nginx"}[$sample_period]))
+              # less than the threshold indicates the service is struggling in some way
+              threshold: 0.99
           dependencies:
             # list of each dependent service and the test to determine its healthiness
             - name: Student Web Service
               description: Service course and registration information
-              query: sum(increase(restclient_response_status_code_bucket{exported_service="sws", job="myuw-prod-$application_instance", le=~"400(.0)?"}[$sample_period])) / sum(increase(restclient_response_status_code_bucket{exported_service="sws", job="myuw-prod-$application_instance", le=~"500(.0)?"}[$sample_period])) > bool 0.98
+              query: sum(increase(restclient_response_status_code_bucket{exported_service="sws", job="myuw-prod-$application_instance", le=~"400(.0)?"}[$sample_period])) / sum(increase(restclient_response_status_code_bucket{exported_service="sws", job="myuw-prod-$application_instance", le=~"500(.0)?"}[$sample_period]))
+              threshold: 0.98
             - name: Person Web Service
               description: Service supplying person information
-              query: sum(increase(restclient_response_status_code_bucket{exported_service="pws", job="myuw-prod-$application_instance", le=~"400(.0)?"}[$sample_period])) / sum(increase(restclient_response_status_code_bucket{exported_service="pws", job="myuw-prod-$application_instance", le=~"500(.0)?"}[$sample_period])) > bool 0.98
+              query: sum(increase(restclient_response_status_code_bucket{exported_service="pws", job="myuw-prod-$application_instance", le=~"400(.0)?"}[$sample_period])) / sum(increase(restclient_response_status_code_bucket{exported_service="pws", job="myuw-prod-$application_instance", le=~"500(.0)?"}[$sample_period]))
+              threshold: 0.98
             - name: Groups Web Service
               description: Service supplying UW group information
-              query: sum(increase(restclient_response_status_code_bucket{exported_service="gws", job="myuw-prod-$application_instance", le=~"400(.0)?"}[$sample_period])) / sum(increase(restclient_response_status_code_bucket{exported_service="gws", job="myuw-prod-$application_instance", le=~"500(.0)?"}[$sample_period])) > bool 0.98
+              query: sum(increase(restclient_response_status_code_bucket{exported_service="gws", job="myuw-prod-$application_instance", le=~"400(.0)?"}[$sample_period])) / sum(increase(restclient_response_status_code_bucket{exported_service="gws", job="myuw-prod-$application_instance", le=~"500(.0)?"}[$sample_period]))
+              threshold: 0.98

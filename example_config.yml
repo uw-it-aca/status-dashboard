@@ -23,12 +23,16 @@ dashboards:
         description: UW Campus Information Portal
         link: https://my.uw.edu
         # query should return boolean: "1" is healthy, "0" is not so much
-        query: some_metric{label1=value,label2=instance-$application_instance} bool > 99.99
+        query: sum(some_metric{label1=value,label2=instance-$application_instance,label3=portion}[$sample_period]) / sum(some_metric{label1=value,label2=instance-$application_instance,label3=whole}[$sample_period])
+        # less than the threshold indicates the service is struggling in some way
+        threshold: 0.99
     dependencies:
       # list of each dependent service and the test to determine its healthiness
       - name: Student Web Service
         description: Service course and registration information
-        query: some_metric{label=value,label2=instance-$application_instance} bool > 99.9
+        query: sum(dependent_metric1{label1=value,label2=instance-$application_instance,label3=portion}[$sample_period]) / sum(dependent_metric1{label1=value,label2=instance-$application_instance,label3=whole}[$sample_period])
+        threshold: 0.999
       - name: Person Web Service
         description: Service supplying person information
-        query: some_metric{label=value,label2=instance-$application_instance} bool > 75.0
+        query: sum(dependent_metric2{label1=value,label2=instance-$application_instance,label3=portion}[$sample_period]) / sum(dependent_metric2{label1=value,label2=instance-$application_instance,label3=whole}[$sample_period])
+        threshold: 0.75
