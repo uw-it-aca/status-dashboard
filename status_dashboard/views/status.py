@@ -79,9 +79,9 @@ class StatusRequest(RequestHandler):
                 health = False
 
             context.append({
-                "name": member.get('name'),
-                "description": member.get('description'),
-                "link": member.get('link'),
+                "name": member.get('name', ""),
+                "description": member.get('description', ""),
+                "link": member.get('link', ""),
                 "nominal": health
             })
 

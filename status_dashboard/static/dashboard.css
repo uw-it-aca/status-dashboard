@@ -11,18 +11,26 @@ html, body {
 }
 
 .status {
-    width: 8em;
+    width: 10em;
+    font-size: smaller;
 }
 
-.status_title {
+.status-description {
+    width: 80%;
+    float: left;
+}
+
+.status-link {
+    width: 20%
+    float: right;
+}
+
+.status-title {
     margin-bottom: 12px;
     font-size: larger;
     font-weight: 600;
 }
 
-.description {
-    font-size: smaller;
-}
 
 .pill {
     border-style: solid;
@@ -34,7 +42,7 @@ html, body {
     margin-right: 10px;
     text-align: center;
     vertical-align: middle;
-    line-height: 20px;
+    line-height: 32px;
     font-size: 20px;
     background-color: #fad0d0;
     color: #ff0000;
