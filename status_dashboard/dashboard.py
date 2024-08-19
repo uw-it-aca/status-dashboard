@@ -10,7 +10,6 @@ example configuration file can be found in the repository.
 """
 
 from server import dashboard_server
-from metrics import metrics_server
 import sys
 import os
 import logging
@@ -28,9 +27,6 @@ logger = logging.getLogger(__name__)
 
 if __name__ == '__main__':
     try:
-        # open metrics exporter endpoint
-        metrics_server(int(os.environ.get('METRICS_PORT', 9100)))
-
         # launch dashboard server
         dashboard_server(int(os.environ.get("PORT", 8000)))
     except Exception as e:

@@ -7,6 +7,7 @@ Dashboard initialization and tornado server launch
 
 from status_dashboard.config import settings
 from status_dashboard.views.status import StatusRequest
+from status_dashboard.metrics import MetricsHandler
 from tornado.web import Application, StaticFileHandler
 from pathlib import Path
 import asyncio
@@ -22,9 +23,10 @@ def dashboard_app():
     Initialize the dashboard server
     """
 
-    # register static endpoints
+    # register metrics and static endpoints
     file_path = Path(__file__).resolve().parent
     endpoints = [
+        (r"/metrics", MetricsHandler),
         (r"/static/(.*)", StaticFileHandler, {"path": f"{file_path}/static/"})
     ]
 

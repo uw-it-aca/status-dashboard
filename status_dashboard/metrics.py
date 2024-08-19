@@ -4,7 +4,9 @@
 """
 Functions supporting Prometheus metrics
 """
-from prometheus_client import start_http_server, Counter
+from prometheus_client import Counter, REGISTRY
+from prometheus_client.exposition import choose_encoder
+from tornado.web import RequestHandler
 
 
 # prepare metrics
@@ -24,8 +26,12 @@ def request_counter(dashboard_name):
     status_dashboard_request_count.labels(dashboard_name).inc()
 
 
-def metrics_server(port):
+class MetricsHandler(RequestHandler):
     """
-    Serve metrics requests
+    Torando request handler for prometheus metrics
     """
-    start_http_server(port)
+    def get(self):
+        encoder, content_type = choose_encoder(
+            self.request.headers.get('accept'))
+        self.set_header("Content-Type", content_type)
+        self.write(encoder(REGISTRY))
