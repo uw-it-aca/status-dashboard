@@ -1,0 +1,108 @@
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 2
+
+ingress:
+  enabled: true
+  type: nginx
+  tls:
+    dev-status-dashboard:
+      secretName: status.dnatls.s.uw.edu-ingress-cert
+      hosts:
+        - status.dnatls.s.uw.edu
+  hosts:
+    dev-status-dashboard:
+      host: status.dnatls.s.uw.edu
+      paths:
+        - "/"
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+
+repo: status-dashboard
+instance: test
+
+containerPort: 8000
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 25m
+    memory: 64Mi
+
+service:
+  enabled: true
+  ports:
+    - port: 80
+      targetPort: 8000
+      name: http
+
+deploymentInitialization:
+  enabled: false
+
+database:
+  engine: null
+
+metrics:
+  enabled: true
+
+readiness:
+  enabled: false
+
+lifecycle:
+  enabled: false
+
+environmentVariables:
+  - name: ENV
+    value: dev
+  - name: DASHBOARD_CONFIG_FILE
+    value: /app/config/dashboard.yml
+  - name: APPLICATION_INSTANCE
+    value: test
+
+podVolumes:
+  status-dashboard-config:
+    volume:
+      configMap:
+        name: status-dashboard-config
+    mount:
+      mountPath: /app/config/dashboard.yml
+      subPath: dashboard.yml
+    containers: [ base ]
+
+configmaps:
+  status-dashboard-config:
+    dashboard.yml: |
+      variables:
+        - name: prometheus_api_server
+          value: http://prometheus-k8s.mci-monitoring.svc.cluster.local:9090
+        - name: application_instance
+          value: $APPLICATION_INSTANCE
+        - name: sample_period
+          value: 15m
+        - name: timezone
+          value: US/Pacific
+      dashboards:
+          # application's display name
+        - app_name: MyUW
+          # status page url path: /{app_path}
+          app_path: myuw
+          # status page cache timeout (optional: default is 5 minutes)
+          cache_timeout: 1
+          application:
+            # list of application components and the prometheus query to determine health
+            - name: MyUW
+              description: UW Campus Information Portal
+              link: https://my.uw.edu
+              # query should return boolean: "1" is healthy, "0" is not so much
+              query: sum(increase(nginx_ingress_controller_requests{exported_service="myuw-prod-prod",controller_class=~"k8s.io/ingress-nginx",namespace=~"ingress-nginx",status=~"([123]..|40[134]|543)"}[15m])) / sum(increase(nginx_ingress_controller_requests{exported_service="myuw-prod-prod",controller_class=~"k8s.io/ingress-nginx",namespace=~"ingress-nginx"}[15m])) < bool 0.995
+          dependencies:
+            # list of each dependent service and the test to determine its healthiness
+            - name: Student Web Service
+              description: Service course and registration information
+              query: sum(increase(restclient_response_status_code_bucket{exported_service="sws", job="myuw-prod-$application_instance", le=~"400(.0)?"}[$sample_period])) / sum(increase(restclient_response_status_code_bucket{exported_service="sws", job="myuw-prod-$application_instance", le=~"500(.0)?"}[$sample_period])) < bool 0.999
+            - name: Person Web Service
+              description: Service supplying person information
+              query: sum(increase(restclient_response_status_code_bucket{exported_service="pws", job="myuw-prod-$application_instance", le=~"400(.0)?"}[$sample_period])) / sum(increase(restclient_response_status_code_bucket{exported_service="pws", job="myuw-prod-$application_instance", le=~"500(.0)?"}[$sample_period])) < bool 0.999
