@@ -103,7 +103,7 @@ configmaps:
               description: UW Campus Information Portal
               link: https://my.uw.edu
               # query should return boolean: "1" is healthy, "0" is not so much
-              query: sum(increase(nginx_ingress_controller_requests{exported_service="myuw-prod-prod",controller_class=~"k8s.io/ingress-nginx",namespace=~"ingress-nginx",status=~"([123]..|40[134]|543)"}[15m])) / sum(increase(nginx_ingress_controller_requests{exported_service="myuw-prod-prod",controller_class=~"k8s.io/ingress-nginx",namespace=~"ingress-nginx"}[15m])) < bool 0.995
+              query: sum(increase(nginx_ingress_controller_requests{exported_service="myuw-prod-$application_instance",controller_class=~"k8s.io/ingress-nginx",namespace=~"ingress-nginx",status=~"([123]..|40[134]|543)"}[15m])) / sum(increase(nginx_ingress_controller_requests{exported_service="myuw-prod-$application_instance",controller_class=~"k8s.io/ingress-nginx",namespace=~"ingress-nginx"}[15m])) < bool 0.995
           dependencies:
             # list of each dependent service and the test to determine its healthiness
             - name: Student Web Service

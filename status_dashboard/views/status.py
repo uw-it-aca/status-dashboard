@@ -72,8 +72,13 @@ class StatusRequest(RequestHandler):
 
         for member in self.dashboard.get(group_name, []):
             try:
-                query = member.get('query')
-                health = prometheus.promql_boolean_query(query)
+                try:
+                    query = member["_query"]
+                except KeyError:
+                    query = self._expand_query(member.get('query'))
+                    member["_query"] = query
+
+                health = prometheus.boolean_query(query)
             except Exception as ex:
                 logger.error(f"query '{query}' error: {ex}")
                 health = False
@@ -86,3 +91,12 @@ class StatusRequest(RequestHandler):
             })
 
         return context
+
+    def _expand_query(self, query):
+        for var, value in settings.variables():
+            if isinstance(value, (int, float, str, bool)):
+                query = query.replace(f"${var}", value)
+
+        logger.debug(f"query: {query}")
+
+        return query

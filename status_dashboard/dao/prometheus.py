@@ -3,6 +3,7 @@
 
 from status_dashboard.config import settings
 from prometheus_api_client import PrometheusConnect
+from random import choice
 import logging
 import os
 
@@ -17,30 +18,24 @@ class Prometheus:
     _prometheus = None
 
     def __init__(self):
-        self._prometheus = PrometheusConnect(settings.get(
+        self._prometheus_api = PrometheusConnect(settings.get(
             "prometheus_api_server", "http://localhost:9090"))
+        self.query = self.mock_query if (
+            os.environ.get("ENV", "") == "localdev") else self.live_query
 
-    def promql_query(self, query):
-        for var, value in settings.variables():
-            if isinstance(value, (int, float, str, bool)):
-                query = query.replace(f"${var}", value)
+    def live_query(self, query):
+        return self._prometheus_api.custom_query(query)
 
-        logger.debug(f"query: {query}")
+    def mock_query(self, query):
+        return choice([
+            [{'metric': {}, 'value': [1724025393.875, '0']}],
+            [{'metric': {}, 'value': [1724025393.875, '1']}],
+            [{'metric': {}, 'value': [1724025393.875, '1']}],
+            [{'metric': {}, 'value': [1724025393.875, '1']}]
+        ])
 
-        # lamest mock data evar
-        if os.environ.get('ENV', 'localdev') == 'localdev':
-            from random import choice
-            return choice([
-                [{'metric': {}, 'value': [1724025393.875, '0']}],
-                [{'metric': {}, 'value': [1724025393.875, '1']}],
-                [{'metric': {}, 'value': [1724025393.875, '1']}],
-                [{'metric': {}, 'value': [1724025393.875, '1']}]
-            ])
-
-        return self._prometheus.custom_query(query)
-
-    def promql_boolean_query(self, query):
-        response = self.promql_query(query)
+    def boolean_query(self, query):
+        response = self.query(query)
 
         logger.debug(f"query: '{query}' response: {response}")
 

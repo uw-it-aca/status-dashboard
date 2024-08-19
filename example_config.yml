@@ -23,12 +23,12 @@ dashboards:
         description: UW Campus Information Portal
         link: https://my.uw.edu
         # query should return boolean: "1" is healthy, "0" is not so much
-        query: some_metric{label=value} bool > 99.99
+        query: some_metric{label1=value,label2=instance-$application_instance} bool > 99.99
     dependencies:
       # list of each dependent service and the test to determine its healthiness
       - name: Student Web Service
         description: Service course and registration information
-        query: some_metric{label=value} bool > 99.9
+        query: some_metric{label=value,label2=instance-$application_instance} bool > 99.9
       - name: Person Web Service
         description: Service supplying person information
-        query: some_metric{label=value} bool > 75.0
+        query: some_metric{label=value,label2=instance-$application_instance} bool > 75.0
