@@ -8,12 +8,12 @@ ingress:
   type: nginx
   tls:
     dev-status-dashboard:
-      secretName: status.dnatls.s.uw.edu-ingress-cert
+      secretName: status-test.dnatls.uw.edu-ingress-cert
       hosts:
-        - status.dnatls.s.uw.edu
+        - status-test.dnatls.uw.edu
   hosts:
     dev-status-dashboard:
-      host: status.dnatls.s.uw.edu
+      host: status-test.dnatls.uw.edu
       paths:
         - "/"
   annotations:
