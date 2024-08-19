@@ -42,6 +42,6 @@ class Prometheus:
         # response should look like:
         #      [{'metric': {}, 'value': [1724025393.875, '0']}]
         if len(response) == 1:
-            return response[0]['value'][1] == '1'
+            return response[0]['value'][1] in ['1', 'NaN']
 
         raise ValueError(f"unexpected response: {response}")
