@@ -2,6 +2,8 @@
 # dashboard config file
 #
 variables:
+  - name: prometheus_api_server
+    value: http://prometheus-server:9090
   - name: application_instance
     value: $APPLICATION_INSTANCE
   - name: sample_period
@@ -9,21 +11,24 @@ variables:
   - name: timezone
     value: US/Pacific
 dashboards:
-  - app_name: My_App
-    app_path: my_app
-    # status page cache duration (optional: default is 5 minutes)
-    cache_duration: 1
+    # application's display name
+  - app_name: MyUW
+    # status page url path: /{app_path}
+    app_path: myuw
+    # status page cache timeout (optional: default is 5 minutes)
+    cache_timeout: 1
     application:
-      # list of application components and the test to determine their healthiness
-      - name: My_App
+      # list of application components and the prometheus query to determine health
+      - name: MyUW
         description: UW Campus Information Portal
         link: https://my.uw.edu
-        test: (sum(increase(nginx_ingress_controller_requests{exported_service="myuw-prod-$application_instance",controller_class=~"k8s.io/ingress-nginx",namespace=~"ingress-nginx",status=~"5([^4].|4[^3])"}[$sample_period])) / sum(increase(nginx_ingress_controller_requests{exported_service="myuw-prod-$application_instance",controller_class=~"k8s.io/ingress-nginx",namespace=~"ingress-nginx"}[$sample_period])) > bool 0.0001)
+        # query should return boolean: "1" is healthy, "0" is not so much
+        query: some_metric{label=value} bool > 99.99
     dependencies:
       # list of each dependent service and the test to determine its healthiness
       - name: Student Web Service
         desription: Service course and registration information
-        test: "foo"
+        query: some_metric{label=value} bool > 99.9
       - name: Person Web Service
         desription: Service supplying person information
-        test: "foo"
+        query: some_metric{label=value} bool > 75.0

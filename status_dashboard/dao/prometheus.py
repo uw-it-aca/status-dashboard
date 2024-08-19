@@ -10,25 +10,43 @@ import os
 logger = logging.getLogger(__name__)
 
 
-def promql_query(query):
+class Prometheus:
     """
-    Execute query against Prometheus
+    Prometheus API client
     """
-    for var, value in settings.variables():
-        if isinstance(value, (int, float, str, bool)):
-            query = query.replace(f"${var}", value)
+    _prometheus = None
 
-    logger.debug(f"query: {query}")
+    def __init__(self):
+        self._prometheus = PrometheusConnect(settings.get(
+            "prometheus_api_server", "http://localhost:9090"))
 
-    if os.environ.get('ENV', 'localdev') == 'localdev':
-        from random import choice
-        return choice(["0", "1", "1", "1"])
+    def promql_query(self, query):
+        for var, value in settings.variables():
+            if isinstance(value, (int, float, str, bool)):
+                query = query.replace(f"${var}", value)
 
-    prom = PrometheusConnect(
-        url=os.environ.get('PROMETHEUS_SERVER', "http://localhost:9090"))
+        logger.debug(f"query: {query}")
 
-    return query
+        # lamest mock data evar
+        if os.environ.get('ENV', 'localdev') == 'localdev':
+            from random import choice
+            return choice([
+                [{'metric': {}, 'value': [1724025393.875, '0']}],
+                [{'metric': {}, 'value': [1724025393.875, '1']}],
+                [{'metric': {}, 'value': [1724025393.875, '1']}],
+                [{'metric': {}, 'value': [1724025393.875, '1']}]
+            ])
 
+        return self._prometheus.custom_query(query)
 
-def promql_query_boolean(query, variables={}):
-    return promql_query(query) == "1"
+    def promql_boolean_query(self, query):
+        response = self.promql_query(query)
+
+        logger.debug(f"query: '{query}' response: {response}")
+
+        # response should look like:
+        #      [{'metric': {}, 'value': [1724025393.875, '0']}]
+        if len(response) == 1:
+            return response[0]['value'][1] == '1'
+
+        raise ValueError(f"unexpected response: {response}")

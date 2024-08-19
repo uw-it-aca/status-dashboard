@@ -3,7 +3,7 @@
 
 from status_dashboard.config import settings
 from status_dashboard.metrics import request_counter
-from status_dashboard.dao.prometheus import promql_query_boolean
+from status_dashboard.dao.prometheus import Prometheus
 from jinja2 import Environment, PackageLoader, select_autoescape
 from tornado.web import RequestHandler
 from datetime import datetime, timedelta
@@ -18,6 +18,7 @@ jinja2_env = Environment(
     loader=PackageLoader("status_dashboard"),
     autoescape=select_autoescape()
 )
+prometheus = Prometheus()
 
 
 class StatusRequest(RequestHandler):
@@ -34,7 +35,7 @@ class StatusRequest(RequestHandler):
         # serve cached dashboard if available
         cache_file = f"/tmp/{app_path}.html"
         timeout = 0 if self.request.arguments.get(
-            'refresh', False) else self.dashboard.get("cache_duration", 5)
+            'refresh', False) else self.dashboard.get("cache_timeout", 5)
         if timeout:
             try:
                 stat = os.stat(cache_file)
@@ -49,31 +50,13 @@ class StatusRequest(RequestHandler):
                 pass
 
         # no cached file, get to queryin'
-        pacific = pytz.timezone(settings.get('timezone', 'US/Pacific'))
-        application = []
-        for component in self.dashboard.get('application', []):
-            application.append({
-                "name": component.get('name'),
-                "description": component.get('description'),
-                "link": component.get('link'),
-                "nominal": promql_query_boolean(component.get('test'))
-            })
-
-        dependencies = []
-        for dependency in self.dashboard.get('dependencies', []):
-            dependencies.append({
-                "name": dependency.get('name'),
-                "description": dependency.get('description'),
-                "link": dependency.get('link'),
-                "nominal": promql_query_boolean(dependency.get('test'))
-            })
-
+        app_timezone = pytz.timezone(settings.get('timezone', 'US/Pacific'))
         context = {
             "name": app_name,
-            "application_section": application,
-            "dependencies_section": dependencies,
-            "last_update": now.astimezone(pytz.timezone(
-                'US/Pacific')).strftime("%-I:%M:%S %p %Y-%m-%d %Z")
+            "application_section": self._load_group_context('application'),
+            "dependencies_section": self._load_group_context('dependencies'),
+            "last_update": now.astimezone(
+                app_timezone).strftime("%-I:%M:%S %p %Y-%m-%d %Z")
         }
 
         template = jinja2_env.get_template("dashboard.html")
@@ -83,3 +66,23 @@ class StatusRequest(RequestHandler):
             f.write(html)
 
         self.write(template.render(context))
+
+    def _load_group_context(self, group_name):
+        context = []
+
+        for member in self.dashboard.get(group_name, []):
+            try:
+                query = member.get('query')
+                health = prometheus.promql_boolean_query(query)
+            except Exception as ex:
+                logger.error(f"query '{query}' error: {ex}")
+                health = False
+
+            context.append({
+                "name": member.get('name'),
+                "description": member.get('description'),
+                "link": member.get('link'),
+                "nominal": health
+            })
+
+        return context
