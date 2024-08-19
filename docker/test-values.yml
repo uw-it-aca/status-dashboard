@@ -38,6 +38,9 @@ service:
     - port: 80
       targetPort: 8000
       name: http
+    - port: 9100
+      targetPort: 9100
+      name: metrics
 
 deploymentInitialization:
   enabled: false
@@ -49,7 +52,10 @@ metrics:
   enabled: true
 
 readiness:
-  enabled: false
+  enabled: true
+  command:
+    - "/scripts/ready.sh"
+
 
 lifecycle:
   enabled: false

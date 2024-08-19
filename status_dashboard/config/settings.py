@@ -29,6 +29,9 @@ class _Settings:
 
             self.set("dashboards", config.get("dashboards", []))
 
+            with open("/tmp/ready", "w") as file:
+                file.write("ok\n")
+
     def set(self, name, value):
         self.__variables[name] = value
 
