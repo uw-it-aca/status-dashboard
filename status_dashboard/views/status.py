@@ -65,7 +65,7 @@ class StatusRequest(RequestHandler):
         with open(cache_file, "w") as f:
             f.write(html)
 
-        self.write(template.render(context))
+        self.write(html)
 
     def _load_group_context(self, group_name):
         context = []
