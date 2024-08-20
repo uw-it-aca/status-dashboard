@@ -1,0 +1,16 @@
+<div class="service{% if service.nominal %} nominal{% endif %}">
+  <div class="description">
+    {% if service.link %}
+    <div class="link">
+      <a href="{{service.link}}"><i class="fa fa-external-link-alt"></i></a>
+    </div>
+    {% endif %}
+    <span class="name">{{service.name}}</span><br />
+    <span class="full-name">{{service.description}}</span>
+  </div>
+  <div class="health">
+    <div class="pill">
+      <i class="fa {% if service.nominal %}fa-check-circle{%else%}fa-exclamation-circle{% endif %}"></i>
+    </div>
+  </div>
+</div>

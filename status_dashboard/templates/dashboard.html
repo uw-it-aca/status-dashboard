@@ -7,44 +7,33 @@
 </div>
 <div class="container">
   <div class="row">
-    <div class="status-title">Service Status</div>
-    {% for application in application_section %}
-    <div class="status">
-      <div class="status-header">
-        <div class="status-description">
-          {{application.description}}
-        </div>
-        <div class="status-link">
-          {% if application.link %}
-          <a href="{{application.link}}"><i class="fa fa-external-link-alt"></i></a>
-          {% endif %}
-        </div>
-      </div>
-      <div class="pill{% if application.nominal %} nominal{% endif %}">
-        <i class="fa {% if application.nominal %}fa-check{%else%}fa-exclamation-circle{% endif %}"></i>
+    <div class="overall-status{% if overall_nominal %} nominal{% endif %}">
+      <div class="status">
+      {% if overall_nominal %}
+      <i class="fa fa-check"></i>{{name}} is in good health.
+      {% else %}
+      <i class="fa fa-exclamation"></i> {{name}} or dependent services may be struggling.
+      {% endif %}
       </div>
     </div>
-    {% endfor %}
+  </div>
+  <div class="row status-title">
+    System Status
   </div>
   <div class="row">
-    <div class="status-title">Dependent Services Status</div>
-    {% for dependency in dependencies_section %}
-    <div class="status">
-      <div class="status-header">
-        <div class="status-description">
-          {{dependency.name}}<br />
-          {{dependency.description}}
-        </div>
-        <div class="status-link">
-          {% if dependency.link %}
-          <a href="{{dependency.link}}"><i class="fa fa-external-link-alt"></i></a>
-          {% endif %}
-        </div>
-      </div>
-      <div class="pill{% if dependency.nominal %} nominal{% endif %}">
-        <i class="fa {% if dependency.nominal %}fa-check{%else%}fa-exclamation-circle{% endif %}"></i>
-      </div>
+    {% for service in application_section %}
+    {% include 'service.html' %}
+    {% endfor %}
+  </div>
+  <div class="row status-title">
+    Dependent Service Status
+    <div>
+      These are services {{name}} retrieves data from to produce content.
     </div>
+  </div>
+  <div class="row">
+    {% for service in dependencies_section %}
+    {% include 'service.html' %}
     {% endfor %}
   </div>
   <div class="footer">

@@ -59,6 +59,10 @@ class StatusRequest(RequestHandler):
                 app_timezone).strftime("%-I:%M:%S %p %Y-%m-%d %Z")
         }
 
+        context["overall_nominal"] = (
+            all([s['nominal'] for s in context['application_section']]) and
+                all([s['nominal'] for s in context['dependencies_section']]))
+
         template = jinja2_env.get_template("dashboard.html")
         html = template.render(context)
 
