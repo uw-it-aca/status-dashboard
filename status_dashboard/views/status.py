@@ -78,8 +78,7 @@ class StatusRequest(RequestHandler):
                     query = self._expand_query(member.get('query'))
                     member["_query"] = query
 
-                health = self._health(
-                    prometheus.query(query), member.get('threshold'))
+                health = self._health(prometheus.query(query), member)
             except Exception as ex:
                 logger.error(f"query '{query}' error: {ex}")
                 health = False
@@ -100,5 +99,10 @@ class StatusRequest(RequestHandler):
 
         return query
 
-    def _health(self, result, threshold):
-        return (float(result) if result != 'NaN' else 0.0) > float(threshold)
+    def _health(self, raw_result, member):
+        on_null = float(member.get('on_null', "0.0"))
+        result = float(raw_result) if (
+            raw_result and raw_result != 'NaN') else on_null
+        threshold = float(member.get('threshold', "0.0"))
+
+        return result > threshold
