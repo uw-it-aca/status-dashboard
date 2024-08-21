@@ -1,24 +1,33 @@
 {% extends "base.html" %}
 
 {% block title %}{{name}} Status Dashboard{% endblock %}
+{% block javascript %}
+<script>
+// attach tooltip events
+document.addEventListener("DOMContentLoaded", function(){
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function(element){
+        return new bootstrap.Tooltip(element);
+    });
+});
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="header">
-  {{name}} Status Dashboard
+  <div class="wrapper" style="background-image: url(/static/images/w-logo-white.png)">
+    <div class="title">{{name}} Status Dashboard</a></div>
+  </div>
 </div>
 <div class="container">
   <div class="row">
     <div class="overall-status{% if overall_nominal %} nominal{% endif %}">
-      <div class="status">
-      {% if overall_nominal %}
-      <i class="fa fa-check"></i>{{name}} is in good health.
-      {% else %}
-      <i class="fa fa-exclamation"></i> {{name}} or dependent services may be struggling.
-      {% endif %}
-      </div>
+      <span class="status nominal">{{name}} is in good health.</span>
+      <span class="status critical">{{name}} or dependent services may be struggling.</span>
     </div>
   </div>
   <div class="row status-title">
-    System Status
+    {{name}} Status
   </div>
   <div class="row">
     {% for service in application_section %}
@@ -28,7 +37,7 @@
   <div class="row status-title">
     Dependent Service Status
     <div>
-      These are services {{name}} retrieves data from to produce content.
+      {{name}} retrieves data from the services below to produce content.
     </div>
   </div>
   <div class="row">

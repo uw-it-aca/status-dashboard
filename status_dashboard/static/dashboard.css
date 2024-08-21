@@ -10,6 +10,33 @@ html, body {
     color:#333;
 }
 
+.header {
+    background: #4b2e83;
+    color: white;
+    font-weight: 500;
+    line-height: 3em;
+    padding: 0 5em;
+    font-size: 1.5em;
+    width: 100%;
+}
+
+.header .wrapper {
+    background-repeat: no-repeat;
+    background-size: 45px;
+    background-position: right 20px bottom;
+}
+
+.status-title {
+    margin-top: 20px;
+    font-size: 1.75em;
+    font-weight: 600;
+}
+
+.status-title div {
+    font-size: .5em;
+    font-weight: 300;
+}
+
 .overall-status {
     vertical-align: middle;
     text-align: center;
@@ -19,29 +46,46 @@ html, body {
 .overall-status .status {
     font-size: 1.2em;
     font-weight: 500;
-    display: inline-block;
+    line-height: 2em;
     width: 50%;
-    background-color: #ff1818;
     color: white;
     border-radius: 10px;
     margin-top: 30px;
 }
 
-.overall-status.nominal div {
-    background-color: #02cf1a;
+.overall-status div {
 }
 
-.overall-status div i {
-    font-size: 1.25em;
-    padding-right: .75em;
+.overall-status .nominal {
+    background-color: #02cf1a;
+    display: none;
+}
+
+.overall-status .critical {
+    display: inline-block;
+    background-color: #ff1818;
+}
+
+.overall-status.nominal .nominal {
+    display: inline-block;
+}
+
+.overall-status.nominal .critical {
+    display: none;
+}
+
+.overall-status .status i {
+    font-size: 1.5em;
+    margin-right: .25em;
+    -webkit-text-stroke: 1px;
 }
 
 .service {
     border: 1px solid #ff8080;
     border-radius: 10px;
-    width: 22em;
-    height: 5em;
-    margin: 0 20px 0 0;
+    width: 21.5em;
+    min-height: 3em;
+    margin: 0 20px 20px 0;
     padding: 0;
     background-color: #ffefef;
 }
@@ -51,103 +95,66 @@ html, body {
     border-color: lightgray;
 }
 
-.service.nominal .health .pill {
-    color: #02cf1a;
-}
-
 .service .description {
     padding: 8px 10px;
-    width: 18.5em;
-    height: 5em;
+    width: 18em;
     float: left;
 }
 
-.service .description > span.name {
+.service .description .name {
     font-weight: 600;
+    margin-bottom: .2em;
 }
 
-.service .description > span.full-name {
+.service .description .name > a {
+    font-size: .9em;
+    margin-left: .25em;
+}
+
+.service .description .name > i {
+    font-size: .9em;
+    margin-left: .25em;
+}
+
+.service .description .status {
     font-size: .85em;
     font-weight: 400;
 }
 
-.service .description .link {
+.service .health {
+    width: 2.1em;
     float: right;
-    text-decoration: none;
 }
 
 .service .health {
-    width: 3em;
-    height: 5em;
-    float: right;
-}
-
-.status-description {
-    font-size: smaller;
-    font-weight: 600;
-}
-
-.status-link {
-    width: .5em
-    float: right;
-}
-
-.status-title {
-    margin-top: 20px;
-    font-size: 2em;
-    font-weight: 600;
-}
-
-.status-title div {
-    font-size: .5em;
-    font-weight: 300;
-}
-
-.service .health .pill {
     vertical-align: middle;
     text-align: center;
     font-size: 1.5em;
     line-height: 3em;
-    color: #f00;
 }
 
-.x-pill {
-    border: 2px solid #ff0000;
-    border-radius: 10px;
-    padding: 5px 10px;
-    width: 2em;
-    margin-right: 10px;
-    text-align: center;
-    vertical-align: middle;
-    line-height: 32px;
-    font-size: 20px;
-    background-color: #fad0d0;
-    color: #ff0000;
-    font-weight: 600;
-    display: inline-block;
-}
-
-.x-pill.nominal {
-    xbackground-color: #e1f7e4;
-    border-color: #02cf1a;
+.service .health .nominal {
+    display: none;
     color: #02cf1a;
 }
 
-.row {padding-top: 20px;}
-
-.header {
-    background: #4b2e83;
-    color: white;
-    line-height: 50px;
-    padding: 10px 50px;
-    font-size: larger;
-    font-weight: 600;
-    width: 100%;
+.service .health .critical {
+    display: inline-block;
+    color: #f00;
 }
+
+.service.nominal .health .nominal {
+    display: inline-block;
+}
+
+.service.nominal .health .critical {
+    display: none;
+}
+
+.row {padding-top: 20px;}
 
 .footer {
     padding-top: 20px;
     font-size: smaller;
     font-style: italic;
 }
-
