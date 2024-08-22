@@ -186,7 +186,7 @@ configmaps:
                   description: Degraded
             - name: Groups Web Service
               description: Provides UW institutional group information
-              query: (sum(increase(restclient_response_status_code_bucket{exported_service="gws", job="pt-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="gws", job="prt-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="gws", job="prt-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="gws", job="prt-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
               threshold:
                 - limit: 0.75
                   description: Critical
