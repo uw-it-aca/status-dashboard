@@ -158,3 +158,61 @@ configmaps:
                   description: Critical
                 - limit: 0.98
                   description: Degraded
+        - app_name: Provision Request Tool
+          # status page url path: /{app_path}
+          app_path: provision
+          # status page cache timeout (optional: default is 5 minutes)
+          cache_timeout: 1
+          application:
+            # list of application components and the prometheus query to determine health
+            - name: Provision Request Tool
+              description: Service provisioning and lifecycle manager
+              link: https://test.provision.uw.edu
+              query: (sum(increase(nginx_ingress_controller_requests{exported_service="prt-prod-test",controller_class=~"k8s.io/ingress-nginx",namespace=~"ingress-nginx",status=~"([123]..|40[134]|499|543)"}[$sample_period]) OR vector(1))) / (sum(increase(nginx_ingress_controller_requests{exported_service="prt-prod-test",controller_class=~"k8s.io/ingress-nginx",namespace=~"ingress-nginx"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.99
+                  description: Degraded
+          dependencies:
+            # list of each dependent service and the test to determine its healthiness
+            - name: UW Person Web Service
+              description: Source of personal information
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="pws", job="prt-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="pws", job="prt-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: Groups Web Service
+              description: Provides UW institutional group information
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="gws", job="pt-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="gws", job="prt-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: UW NetID Web Service
+              description: Source of personal information
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="uwnetid", job="prt-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="uwnetid", job="prt-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: MSCA Web Service
+              description: UW Microsoft Collaborative Applications API
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="msca", job="prt-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="msca", job="prt-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: ITBill Web Service
+              description: UW Billing Subscription Service API
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="itbill", job="prt-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="itbill", job="prt-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
