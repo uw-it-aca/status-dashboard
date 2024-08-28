@@ -136,9 +136,17 @@ configmaps:
                   description: Critical
                 - limit: 0.98
                   description: Degraded
-            - name: Canvas API
-              description: Source of Canvas course data
-              query: (sum(increase(restclient_response_status_code_bucket{exported_service="canvas", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="canvas", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+            - name: UWNetID API (Major)
+              description: Source of uwnetid password, subscription data
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="uwnetid", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="uwnetid", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: SDB Applicant API
+              description: Source of undergrad application data
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="sdbmyuw", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="sdbmyuw", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
               threshold:
                 - limit: 0.75
                   description: Critical
@@ -160,9 +168,41 @@ configmaps:
                   description: Critical
                 - limit: 0.98
                   description: Degraded
-            - name: UWNetID API
-              description: Source of uwnetid password, subscription data
-              query: (sum(increase(restclient_response_status_code_bucket{exported_service="uwnetid", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="uwnetid", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+            - name: Canvas LMS API
+              description: Source of Canvas course data
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="canvas", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="canvas", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: Instructor Coda API
+              description: Source of instructor iourse iashboard data
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="coda", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="coda", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: Instructor Gradepage API
+              description: Source of grade gubmission data
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="gradepage", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="gradepage", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: MailMan API
+              description: Source of instructor class mailing list request data
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="mailman", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="mailman", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: Housing and Food Services API
+              description: Provides Husky card information
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="hfs", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="hfs", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
               threshold:
                 - limit: 0.75
                   description: Critical
@@ -176,9 +216,9 @@ configmaps:
                   description: Critical
                 - limit: 0.98
                   description: Degraded
-            - name: Housing and Food Services API
-              description: Provides Husky Card information
-              query: (sum(increase(restclient_response_status_code_bucket{exported_service="hfs", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="hfs", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+            - name: UW Library Currics API
+              description: Source of library currics information
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="libcurric", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="libcurric", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
               threshold:
                 - limit: 0.75
                   description: Critical
