@@ -6,9 +6,9 @@ env:
 
 on:
   push:
-    branches: [main, f/myuw]
+    branches: [main, develop]
   pull_request:
-    branches: [main, f/myuw]
+    branches: [main, develop]
     types: [opened, reopened, synchronize]
 
 jobs:
@@ -89,7 +89,7 @@ jobs:
 
       - name: Deployment Pipeline
         if: >-
-          contains(fromJSON('["main", "f/myuw"]'),
+          contains(fromJSON('["main", "develop"]'),
             needs.context.outputs.git_repo_branch)
         uses: uw-it-aca/actions/cicd-deploy@main
         with:
