@@ -109,50 +109,158 @@ configmaps:
                 - limit: 0.99
                   description: Degraded
           dependencies:
-            # list of each dependent service and the test to determine its healthiness
-            - name: UW Student Web Service
-              description: Source of course and registration information
-              query: (sum(increase(restclient_response_status_code_bucket{exported_service="sws", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="sws", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+            # A list of dependent services and the query to determine its healthiness
+            - name: Key Web Service (Blocker)
+              description: Source of key encryption data
+              level: Blocker
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="kws", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="kws", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
               threshold:
                 - limit: 0.75
                   description: Critical
                 - limit: 0.98
                   description: Degraded
-            - name: UW Person Web Service
-              description: Source of personal information
-              query: (sum(increase(restclient_response_status_code_bucket{exported_service="pws", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="pws", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
-              threshold:
-                - limit: 0.75
-                  description: Critical
-                - limit: 0.98
-                  description: Degraded
-            - name: Groups Web Service
-              description: Provides UW institutional group information
+            - name: Groups Web Service (Blocker)
+              description: Source of user affiliation data
+              level: Blocker
               query: (sum(increase(restclient_response_status_code_bucket{exported_service="gws", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="gws", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
               threshold:
                 - limit: 0.75
                   description: Critical
                 - limit: 0.98
                   description: Degraded
-            - name: Canvas API
-              description: Source of course and registration data
+            - name: UW Person Web Service (Blocker)
+              description: Source of user person data
+              level: Blocker
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="pws", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="pws", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: UW Student Web Service (Critical)
+              description: Source of course, enrollment , notice, and registration data
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="sws", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="sws", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: UWIDP (Blocker of Mobile App)
+              description: Source of IDP OIDC keyset data
+              level: Blocker
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="uwidp", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="uwidp", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: UWNetID API (Major)
+              description: Source of uwnetid password, subscription data
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="uwnetid", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="uwnetid", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: SDB Applicant API
+              description: Source of undergrad application data
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="sdbmyuw", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="sdbmyuw", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: MyPlan Auth API
+              description: Source of MyPlan authentocation
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="myplan_auth", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="myplan_auth", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: MyPlan API
+              description: Source of MyPlan course data
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="myplan", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="myplan", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: Canvas LMS API
+              description: Source of Canvas course data
               query: (sum(increase(restclient_response_status_code_bucket{exported_service="canvas", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="canvas", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
               threshold:
                 - limit: 0.75
                   description: Critical
                 - limit: 0.98
                   description: Degraded
+            - name: Instructor Coda API
+              description: Source of instructor iourse iashboard data
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="coda", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="coda", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: Instructor Gradepage API
+              description: Source of grade gubmission data
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="gradepage", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="gradepage", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: MailMan API
+              description: Source of instructor class mailing list request data
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="mailman", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="mailman", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
             - name: Housing and Food Services API
-              description: Provides Husky Card information
+              description: Provides Husky card information
               query: (sum(increase(restclient_response_status_code_bucket{exported_service="hfs", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="hfs", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
               threshold:
                 - limit: 0.75
                   description: Critical
                 - limit: 0.98
                   description: Degraded
-            - name: UW Bookstore
+            - name: UW Library Account API
+              description: Source of user library account information
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="libraries", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="libraries", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: UW Library Currics API
+              description: Source of library currics information
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="libcurric", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="libcurric", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: UW Bookstore API
               description: Source of course textbook data
               query: (sum(increase(restclient_response_status_code_bucket{exported_service="book", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="book", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: Iasystem API
+              description: Source of course evaluation data
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="iasystem", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="iasystem", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+              threshold:
+                - limit: 0.75
+                  description: Critical
+                - limit: 0.98
+                  description: Degraded
+            - name: UPASS API
+              description: Source of UPASS data
+              query: (sum(increase(restclient_response_status_code_bucket{exported_service="upass", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="upass", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
               threshold:
                 - limit: 0.75
                   description: Critical
