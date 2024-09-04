@@ -53,16 +53,14 @@ class StatusRequest(RequestHandler):
         app_timezone = pytz.timezone(settings.get('timezone', 'US/Pacific'))
         context = {
             "name": app_name,
-            "application_section": self._load_group_context('application'),
-            "dependencies_section": self._load_group_context('dependencies'),
+            "panels": self._load_panel_context(
+                self.dashboard.get('panels', [])),
             "last_update": now.astimezone(
                 app_timezone).strftime("%-I:%M:%S %p %Y-%m-%d %Z")
         }
 
-        context["overall_nominal"] = (
-            all([s['nominal'] for s in context['application_section']]) and
-                all([s['nominal'] for s in context['dependencies_section']]))
-
+        context["overall_nominal"] = all(
+            [s['nominal'] for p in context['panels'] for s in p["services"]])
         template = jinja2_env.get_template("dashboard.html")
         html = template.render(context)
 
@@ -71,32 +69,45 @@ class StatusRequest(RequestHandler):
 
         self.write(html)
 
-    def _load_group_context(self, group_name):
-        context = []
+    def _load_panel_context(self, panels):
+        panel_context = []
 
-        for member in self.dashboard.get(group_name, []):
+        for panel in panels:
+            panel_context.append({
+                'name': panel.get('name', ''),
+                'description': panel.get('description', ''),
+                'services': self._load_service_contexts(
+                    panel.get('services', []))
+            })
+
+        return panel_context
+
+    def _load_service_contexts(self, services):
+        service_context = []
+
+        for service in services:
             try:
                 try:
-                    query = member["_query"]
+                    query = service["_query"]
                 except KeyError:
-                    query = self._expand_query(member.get('query'))
-                    member["_query"] = query
+                    query = self._expand_query(service.get('query'))
+                    service["_query"] = query
 
-                health, status = self._health(prometheus.query(query), member)
+                health, status = self._health(prometheus.query(query), service)
             except Exception as ex:
                 logger.error(f"query '{query}' error: {ex}")
                 health = False
                 status = "Unknown"
 
-            context.append({
-                "name": member.get('name', ""),
-                "description": member.get('description', ""),
-                "link": member.get('link', ""),
+            service_context.append({
+                "name": service.get('name', ""),
+                "description": service.get('description', ""),
+                "link": service.get('link', ""),
                 "nominal": health,
                 "status": status
             })
 
-        return context
+        return service_context
 
     def _expand_query(self, query):
         for var, value in settings.variables():

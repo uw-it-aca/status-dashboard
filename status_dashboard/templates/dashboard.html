@@ -26,25 +26,21 @@ document.addEventListener("DOMContentLoaded", function(){
       <span class="status critical">{{name}} or dependent services may be struggling.</span>
     </div>
   </div>
+{% for panel in panels %}
   <div class="row status-title">
-    {{name}} Status
-  </div>
-  <div class="row">
-    {% for service in application_section %}
-    {% include 'service.html' %}
-    {% endfor %}
-  </div>
-  <div class="row status-title">
-    Dependent Service Status
+    {{panel.name}}
+    {% if panel.description %}
     <div>
-      {{name}} retrieves data from the services below to produce content.
+      {{panel.description}}
     </div>
+    {% endif %}
   </div>
   <div class="row">
-    {% for service in dependencies_section %}
+    {% for service in panel.services %}
     {% include 'service.html' %}
     {% endfor %}
   </div>
+{% endfor %}
   <div class="footer">
     Updated: {{last_update}}
   </div>
