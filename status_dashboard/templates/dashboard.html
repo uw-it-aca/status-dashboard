@@ -26,13 +26,25 @@ document.addEventListener("DOMContentLoaded", function(){
       <span class="status critical">{{name}} or dependent services may be struggling.</span>
     </div>
   </div>
+{% if notifications %}
+  <div class="row">
+    <div class="alert alert-info" role="alert">
+      {{notifications|safe}}
+    </div>
+  </div>
+{% endif %}
 {% for panel in panels %}
-  <div class="row status-title">
+  <div class="row panel{% if panel.overall_nominal %} nominal{% endif %}">
     {{panel.name}}
     {% if panel.description %}
-    <div>
-      {{panel.description}}
-    </div>
+      <div class="status {% if panel.critical_description %}nominal{% endif %}">
+        {{panel.description}}
+      </div>
+    {% endif %}
+    {% if panel.critical_description %}
+      <div class="status critical">
+        {{panel.critical_description}}
+      </div>
     {% endif %}
   </div>
   <div class="row">

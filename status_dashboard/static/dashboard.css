@@ -26,17 +26,6 @@ html, body {
     background-position: right 20px bottom;
 }
 
-.status-title {
-    margin-top: 20px;
-    font-size: 1.75em;
-    font-weight: 600;
-}
-
-.status-title div {
-    font-size: .6em;
-    font-weight: 300;
-}
-
 .overall-status {
     vertical-align: middle;
     text-align: center;
@@ -78,6 +67,33 @@ html, body {
     font-size: 1.5em;
     margin-right: .25em;
     -webkit-text-stroke: 1px;
+}
+
+.panel {
+    margin-top: 20px;
+    font-size: 1.75em;
+    font-weight: 600;
+}
+
+.panel div {
+    font-size: .6em;
+    font-weight: 300;
+}
+
+.panel div.critical {
+    color: #ff1818;
+}
+
+.panel div.nominal {
+    display: none;
+}
+
+.panel.nominal div.critical {
+    display: none;
+}
+
+.panel.nominal div.nominal {
+    display: inline-block;
 }
 
 .service {

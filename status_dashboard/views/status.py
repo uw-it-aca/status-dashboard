@@ -6,6 +6,7 @@ from status_dashboard.metrics import request_counter
 from status_dashboard.dao.prometheus import Prometheus
 from jinja2 import Environment, PackageLoader, select_autoescape
 from tornado.web import RequestHandler
+from urllib import request
 from datetime import datetime, timedelta
 import asyncio
 import pytz
@@ -28,6 +29,8 @@ class StatusRequest(RequestHandler):
     def get(self):
         app_path = self.dashboard.get('app_path')
         app_name = self.dashboard.get('app_name')
+        app_notification_url = self.dashboard.get('app_notification_url')
+
         now = datetime.now()
 
         request_counter(f"{app_path}")
@@ -53,6 +56,8 @@ class StatusRequest(RequestHandler):
         app_timezone = pytz.timezone(settings.get('timezone', 'US/Pacific'))
         context = {
             "name": app_name,
+            "notifications": self._load_app_notifications(
+                app_notification_url),
             "panels": self._load_panel_context(
                 self.dashboard.get('panels', [])),
             "last_update": now.astimezone(
@@ -73,11 +78,15 @@ class StatusRequest(RequestHandler):
         panel_context = []
 
         for panel in panels:
+            services = self._load_service_contexts(
+                panel.get('services', []))
+
             panel_context.append({
                 'name': panel.get('name', ''),
                 'description': panel.get('description', ''),
-                'services': self._load_service_contexts(
-                    panel.get('services', []))
+                'critical_description': panel.get('critical_description', ''),
+                'services': services,
+                'overall_nominal': all([s['nominal'] for s in services])
             })
 
         return panel_context
@@ -124,3 +133,12 @@ class StatusRequest(RequestHandler):
                 return False, threshold.get('description', "Critical")
 
         return True, "Normal"
+
+    def _load_app_notifications(self, url):
+        try:
+            with request.urlopen(url) as response:
+                return response.read().decode("utf-8")
+        except Exception as ex:
+            logger.error(f"notification url '{url}' error: {ex}")
+
+        return ""

@@ -78,18 +78,17 @@ configmaps:
   status-dashboard-config:
     dashboard.yml: |
       variables:
-        - name: prometheus_api_server
-          value: http://prometheus-k8s.mci-monitoring.svc.cluster.local:9090
-        - name: sample_period
-          value: 10m
-        - name: timezone
-          value: US/Pacific
+        prometheus_api_server: http://prometheus-k8s.mci-monitoring.svc.cluster.local:9090
+        sample_period: 10m
+        timezone: US/Pacific
       dashboards:
         # application's display name
         - app_name: MyUW
           # status page url path: /{app_path}
           app_path: myuw
-          # status page cache timeout (optional: default is 5 minutes)
+          # bucket supplying dynamic status notifications
+          app_notification_url: https://storage.googleapis.com/status-dashboard/myuw/update.html?update=now
+          # status page cache timeout in minutes (optional: default is 5)
           cache_timeout: 1
           panels:
             - name: MyUW Status
@@ -111,7 +110,8 @@ configmaps:
                     - limit: 0.99
                       description: Degraded
             - name: Critical Services
-              description: Services required to provide MyUW access and content. A service in poor health will likely result in MyUW serving an error page.
+              description: Services required to provide MyUW access and content.
+              critical_description: As not all critical services appear healthy, MyUW is likely unavailable and serving an error page.
               services:
                 # A list of dependent services and the query to determine its healthiness
                 - name: Key Web Service
@@ -167,7 +167,8 @@ configmaps:
                     - limit: 0.98
                       description: Degraded
             - name: Dependent Service Status
-              description: Services providing specific MyUW content.  A service in poor health may cause missing portions of MyUW content.
+              description: Services providing specific MyUW content.
+              critical_description: As not all services appear healthy, some MyUW content may be missing or displaying an error message.
               services:
                 - name: SDB Applicant Service
                   description: Source of undergrad application information

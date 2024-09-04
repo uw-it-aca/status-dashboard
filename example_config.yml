@@ -1,15 +1,18 @@
 #
 # dashboard config file
 #
-prometheus_api_server: http://prometheus-server:9090
-application_instance: $APPLICATION_INSTANCE
-sample_period: 15m
-timezone: US/Pacific
+variables:
+  prometheus_api_server: http://prometheus-server:9090
+  application_instance: $APPLICATION_INSTANCE
+  sample_period: 15m
+  timezone: US/Pacific
 dashboards:
     # application's display name
   - app_name: MyUW
     # status page url path: /{app_path}
     app_path: myuw
+    # url supplying dynamic status notification text
+    #app_notification_url: https://some-server/some-path/myuw/some-file.html
     # status page cache timeout (optional: default is 5 minutes)
     cache_timeout: 1
     panels:
@@ -28,7 +31,8 @@ dashboards:
               - limit: 0.99
                 description: Degraded
       - name: Critical Services
-        description: Services required to provide MyUW access and content. A service in poor health will likely result in MyUW serving an error page.
+        description: Services required to provide MyUW access and content.
+        critical_description: As not all critical services appear healthy, MyUW is likely unavailable and serving an error page.
         services:
           # list of each dependent service and the test to determine its healthiness
           - name: Student Web Service
@@ -44,7 +48,8 @@ dashboards:
               - limit: 0.75
                 description: Some error responses
       - name: Dependent Services
-        description: Services providing specific MyUW content.  A service in poor health may cause missing portions of MyUW content.
+        description: Services providing specific MyUW content.
+        critical_description: As not all services appear healthy, some MyUW content may be missing or displaying an error message.
         services:
           - name: UWNetID Web Service
             description: Service supplying campus service information

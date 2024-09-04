@@ -21,9 +21,9 @@ class _Settings:
                 logger.error(f"config file {config_file} error: {ex}")
                 return
 
-            for variable in config.get("variables", []):
+            for k, v in config.get("variables", {}).items():
                 try:
-                    self.set(variable["name"], self._value(variable["value"]))
+                    self.set(k, self._value(v))
                 except KeyError:
                     pass
 
