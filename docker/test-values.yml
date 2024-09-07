@@ -109,12 +109,12 @@ configmaps:
                       description: Critical
                     - limit: 0.99
                       description: Degraded
-            - name: Critical Services
+            - name: Critical Dependency Status
               description: Services required to provide MyUW access and content.
               critical_description: As not all critical services appear healthy, MyUW is likely unavailable and serving an error page.
               services:
                 # A list of dependent services and the query to determine its healthiness
-                - name: Key Web Service
+                - name: Key Web Service (KWS)
                   description: Required for secure service access
                   level: Blocker
                   query: (sum(increase(restclient_response_status_code_bucket{exported_service="kws", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="kws", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
@@ -123,7 +123,7 @@ configmaps:
                       description: Critical
                     - limit: 0.98
                       description: Degraded
-                - name: Group Web Service
+                - name: Group Web Service (GWS)
                   description: Required for user affiliation information
                   level: Blocker
                   query: (sum(increase(restclient_response_status_code_bucket{exported_service="gws", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="gws", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
@@ -132,7 +132,7 @@ configmaps:
                       description: Critical
                     - limit: 0.98
                       description: Degraded
-                - name: Person Web Service
+                - name: Person Web Service (PWS)
                   description: Required for specific user information
                   level: Blocker
                   query: (sum(increase(restclient_response_status_code_bucket{exported_service="pws", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="pws", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
@@ -141,7 +141,7 @@ configmaps:
                       description: Critical
                     - limit: 0.98
                       description: Degraded
-                - name: Student Web Service
+                - name: Student Web Service (SWS)
                   description: Source of course, personal enrollment, notice, and registration information
                   query: (sum(increase(restclient_response_status_code_bucket{exported_service="sws", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="sws", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
                   threshold:
@@ -166,7 +166,7 @@ configmaps:
                       description: Critical
                     - limit: 0.98
                       description: Degraded
-            - name: Dependent Service Status
+            - name: Secondary Dependency Status
               description: Services providing specific MyUW content.
               critical_description: As not all services appear healthy, some MyUW content may be missing or displaying an error message.
               services:
@@ -187,14 +187,14 @@ configmaps:
                     - limit: 0.98
                       description: Degraded
                 - name: MyPlan Service
-                  description: Source of MyPlan course information
+                  description: Source of MyPlan course registration information
                   query: (sum(increase(restclient_response_status_code_bucket{exported_service="myplan", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="myplan", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
                   threshold:
                     - limit: 0.75
                       description: Critical
                     - limit: 0.98
                       description: Degraded
-                - name: UW Canvas
+                - name: Canvas Course Service
                   description: Source of Canvas course information
                   query: (sum(increase(restclient_response_status_code_bucket{exported_service="canvas", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="canvas", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
                   threshold:
@@ -202,7 +202,7 @@ configmaps:
                       description: Critical
                     - limit: 0.98
                       description: Degraded
-                - name: Instructor Course Dashboard
+                - name: Instructor Course Dashboard (CoDa)
                   description: Source of instructor course dashboard information
                   query: (sum(increase(restclient_response_status_code_bucket{exported_service="coda", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="coda", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
                   threshold:
@@ -210,15 +210,15 @@ configmaps:
                       description: Critical
                     - limit: 0.98
                       description: Degraded
-                - name: Instructor Gradepage API
-                  description: Source of grade gubmission information
+                - name: Gradepage Service
+                  description: Source of grade submission information
                   query: (sum(increase(restclient_response_status_code_bucket{exported_service="gradepage", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="gradepage", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
                   threshold:
                     - limit: 0.75
                       description: Critical
                     - limit: 0.98
                       description: Degraded
-                - name: MailMan API
+                - name: MailMan Service
                   description: Source of instructor class mailing list request data
                   query: (sum(increase(restclient_response_status_code_bucket{exported_service="mailman", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="mailman", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
                   threshold:
@@ -226,15 +226,15 @@ configmaps:
                       description: Critical
                     - limit: 0.98
                       description: Degraded
-                - name: Housing and Food Services API
-                  description: Provides Husky card information
+                - name: Housing and Food Services (HFS)
+                  description: Provides employee/student Husky card, student housing and dining balance information
                   query: (sum(increase(restclient_response_status_code_bucket{exported_service="hfs", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="hfs", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
                   threshold:
                     - limit: 0.75
                       description: Critical
                     - limit: 0.98
                       description: Degraded
-                - name: Library Account API
+                - name: Library Account Service
                   description: Source of user library account information
                   query: (sum(increase(restclient_response_status_code_bucket{exported_service="libraries", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="libraries", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
                   threshold:
@@ -242,7 +242,7 @@ configmaps:
                       description: Critical
                     - limit: 0.98
                       description: Degraded
-                - name: Library Curriculum API
+                - name: Library Curriculum Service
                   description: Source of library Curriculum information
                   query: (sum(increase(restclient_response_status_code_bucket{exported_service="libcurric", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="libcurric", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
                   threshold:
@@ -250,7 +250,7 @@ configmaps:
                       description: Critical
                     - limit: 0.98
                       description: Degraded
-                - name: Book store API
+                - name: UBookstore Textbook and Day One Access Materials
                   description: Source of course textbook information
                   query: (sum(increase(restclient_response_status_code_bucket{exported_service="book", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="book", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
                   threshold:
@@ -258,7 +258,7 @@ configmaps:
                       description: Critical
                     - limit: 0.98
                       description: Degraded
-                - name: Iasystem API
+                - name: Iasystem Instructor Course Evaluation Services
                   description: Source of course evaluation information
                   query: (sum(increase(restclient_response_status_code_bucket{exported_service="iasystem", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="iasystem", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
                   threshold:
@@ -266,8 +266,8 @@ configmaps:
                       description: Critical
                     - limit: 0.98
                       description: Degraded
-                - name: UPASS API
-                  description: Source of UPASS information
+                - name: U-PASS Service
+                  description: Source of employee/student bus pass information
                   query: (sum(increase(restclient_response_status_code_bucket{exported_service="upass", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="upass", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
                   threshold:
                     - limit: 0.75
