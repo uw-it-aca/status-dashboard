@@ -1,19 +1,19 @@
 autoscaling:
   enabled: true
-  minReplicas: 1
-  maxReplicas: 2
+  minReplicas: 2
+  maxReplicas: 8
 
 ingress:
   enabled: true
   type: nginx
   tls:
     dev-status-dashboard:
-      secretName: status-test.dnatls.uw.edu-ingress-cert
+      secretName: status.dnatls.uw.edu-ingress-cert
       hosts:
-        - status-test.dnatls.uw.edu
+        - status.dnatls.uw.edu
   hosts:
     dev-status-dashboard:
-      host: status-test.dnatls.uw.edu
+      host: status.dnatls.uw.edu
       paths:
         - "/"
   annotations:
@@ -21,7 +21,7 @@ ingress:
     nginx.ingress.kubernetes.io/limit-rps: "10"
 
 repo: status-dashboard
-instance: test
+instance: prod
 
 containerPort: 8000
 
@@ -60,9 +60,9 @@ lifecycle:
 
 environmentVariables:
   - name: ENV
-    value: dev
+    value: prod
   - name: APPLICATION_INSTANCE
-    value: test
+    value: prod
   - name: DASHBOARD_CONFIG_FILE
     value: /app/config/dashboard.yml
 

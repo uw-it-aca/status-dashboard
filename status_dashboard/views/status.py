@@ -98,7 +98,7 @@ class StatusRequest(RequestHandler):
 
         for service in services:
             try:
-                print(service)
+                logger.debug(f"service definition --> {service}")
                 query = service.get('query')
                 health, status = self._health(
                     prometheus.query(query), service)

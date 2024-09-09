@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 class _Settings:
     __variables = {}
-    _re_variable = re.compile(r'\$([a-z_]+)')
+    _re_variable = re.compile(r'\${([^}]+)}')
 
     def __init__(self, config_file):
         with open(config_file, "r") as file:
@@ -65,7 +65,7 @@ class _Settings:
                 if substitute[0] == '$':
                     substitute = os.environ.get(substitute[1:])
 
-                value = value.replace(f"${match}", substitute)
+                value = value.replace(f"${{{match}}}", substitute)
 
         return value
 
