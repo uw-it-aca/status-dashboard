@@ -22,6 +22,12 @@ class _Settings:
                 logger.error(f"config file {config_file} error: {ex}")
                 return
 
+            for k, v in config.get("variables", {}).items():
+                try:
+                    self.set(k, v)
+                except KeyError:
+                    pass
+
             self.set("dashboards", config.get("dashboards", []))
 
             for dashboard in self.get("dashboards"):
