@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 import asyncio
 import pytz
 import os
+import re
 import logging
 
 
@@ -30,6 +31,7 @@ class StatusRequest(RequestHandler):
         app_path = self.dashboard.get('app_path')
         app_name = self.dashboard.get('app_name')
         app_notification_url = self.dashboard.get('app_notification_url')
+        _varable_name = re.compile(r'\$([a-z_]+)')
 
         now = datetime.now()
 
@@ -96,13 +98,10 @@ class StatusRequest(RequestHandler):
 
         for service in services:
             try:
-                try:
-                    query = service["_query"]
-                except KeyError:
-                    query = self._expand_query(service.get('query'))
-                    service["_query"] = query
-
-                health, status = self._health(prometheus.query(query), service)
+                print(service)
+                query = service.get('query')
+                health, status = self._health(
+                    prometheus.query(query), service)
             except Exception as ex:
                 logger.error(f"query '{query}' error: {ex}")
                 health = False
@@ -117,13 +116,6 @@ class StatusRequest(RequestHandler):
             })
 
         return service_context
-
-    def _expand_query(self, query):
-        for var, value in settings.variables():
-            if isinstance(value, (int, float, str, bool)):
-                query = query.replace(f"${var}", value)
-
-        return query
 
     def _health(self, raw_result, member):
         result = float(raw_result)

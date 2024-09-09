@@ -6,6 +6,11 @@ variables:
   application_instance: $APPLICATION_INSTANCE
   sample_period: 15m
   timezone: US/Pacific
+web-service-block: &web-service-block
+    query: sum(dependent_metric1{label1=value,label2=$app_label-$application_instance,label3=$service}[$sample_period]) / sum(dependent_metric1{label1=value,label2=$app_label-$application_instance,label3=$service}[$sample_period])
+    threshold:
+      - limit: 0.999
+        description: Some error responses
 dashboards:
     # application's display name
   - app_name: MyUW
@@ -15,15 +20,17 @@ dashboards:
     #app_notification_url: https://some-server/some-path/myuw/some-file.html
     # status page cache timeout (optional: default is 5 minutes)
     cache_timeout: 1
+    variables:
+      app_label: myuw
     panels:
       - name: MyUW Status
         services:
-          # list of application components and the prometheus query to determine health
+          # dictionary of application components and the prometheus query to determine health
           - name: MyUW
             description: UW Campus Information Portal
             link: https://my.uw.edu
             # query should return boolean: "1" is healthy, "0" is not so much
-            query: sum(some_metric{label1=value,label2=instance-$application_instance,label3=portion}[$sample_period]) / sum(some_metric{label1=value,label2=instance-$application_instance,label3=whole}[$sample_period])
+            query: sum(some_metric{label1=value,label2=$app_label-$application_instance,label3=portion}[$sample_period]) / sum(some_metric{label1=value,label2=$app_label-$application_instance,label3=whole}[$sample_period])
             # metric results which produce error indicators listed in descending order
             threshold:
               - limit: 0.75
@@ -34,46 +41,39 @@ dashboards:
         description: Services required to provide MyUW access and content.
         critical_description: As not all critical services appear healthy, MyUW is likely unavailable and serving an error page.
         services:
-          # list of each dependent service and the test to determine its healthiness
-          - name: Student Web Service
+          # list of dependent services and the test to determine its healthiness
+          - <<: *web-service-block
+            name: Student Web Service
             description: Service course and registration information
-            query: sum(dependent_metric1{label1=value,label2=instance-$application_instance,label3=portion}[$sample_period]) / sum(dependent_metric1{label1=value,label2=instance-$application_instance,label3=whole}[$sample_period])
-            threshold:
-              - limit: 0.999
-                description: Some error responses
-          - name: Person Web Service
+            variables:
+               service: sws
+          - <<: *web-service-block
+            name: Person Web Service
             description: Service supplying person information
-            query: sum(dependent_metric2{label1=value,label2=instance-$application_instance,label3=portion}[$sample_period]) / sum(dependent_metric2{label1=value,label2=instance-$application_instance,label3=whole}[$sample_period])
-            threshold:
-              - limit: 0.75
-                description: Some error responses
+            variables:
+               service: pws
       - name: Dependent Services
         description: Services providing specific MyUW content.
         critical_description: As not all services appear healthy, some MyUW content may be missing or displaying an error message.
         services:
-          - name: UWNetID Web Service
+          - <<: *web-service-block
+            name: UWNetID Web Service
             description: Service supplying campus service information
-            query: sum(dependent_metric2{label1=value,label2=instance-$application_instance,label3=portion}[$sample_period]) / sum(dependent_metric2{label1=value,label2=instance-$application_instance,label3=whole}[$sample_period])
-            threshold:
-              - limit: 0.75
-                description: Critical
-          - name: Canvas Web Services
+            variables:
+               service: uwnetid
+          - <<: *web-service-block
+            name: Canvas Web Services
             description: Service supplying course information
-            query: sum(dependent_metric2{label1=value,label2=instance-$application_instance,label3=portion}[$sample_period]) / sum(dependent_metric2{label1=value,label2=instance-$application_instance,label3=whole}[$sample_period])
-            threshold:
-              - limit: 0.75
-                description: Service Unavailable
-          - name: Calendar Web Service
+            variables:
+               service: canvas
+          - <<: *web-service-block
+            name: Calendar Web Service
             description: Service supplying event information
             link: https://www.washington.edu/calendar/
-            query: sum(dependent_metric2{label1=value,label2=instance-$application_instance,label3=portion}[$sample_period]) / sum(dependent_metric2{label1=value,label2=instance-$application_instance,label3=whole}[$sample_period])
-            threshold:
-              - limit: 0.75
-                description: Limited response
-          - name: Housing and Food Services
+            variables:
+               service: calendar
+          - <<: *web-service-block
+            name: Housing and Food Services
             description: Husky card information
-            query: sum(dependent_metric2{label1=value,label2=instance-$application_instance,label3=portion}[$sample_period]) / sum(dependent_metric2{label1=value,label2=instance-$application_instance,label3=whole}[$sample_period])
-            threshold:
-              - limit: 0.75
-                description: Unavailable
-
+            variables:
+               service: hfs

@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 class _Settings:
     __variables = {}
+    _re_variable = re.compile(r'\$([a-z_]+)')
 
     def __init__(self, config_file):
         with open(config_file, "r") as file:
@@ -21,13 +22,17 @@ class _Settings:
                 logger.error(f"config file {config_file} error: {ex}")
                 return
 
-            for k, v in config.get("variables", {}).items():
-                try:
-                    self.set(k, self._value(v))
-                except KeyError:
-                    pass
-
             self.set("dashboards", config.get("dashboards", []))
+
+            for dashboard in self.get("dashboards"):
+                for panel in dashboard.get("panels", []):
+                    for service in panel.get("services", []):
+                        variables = [service.get("variables", {})] + [
+                            dashboard.get("variables", {})] + [
+                            config.get("variables", {})]
+
+                        service['query'] = self._value(
+                            service.get("query"), variables)
 
             with open("/tmp/ready", "w") as file:
                 file.write("ok\n")
@@ -38,13 +43,25 @@ class _Settings:
     def get(self, name, default=None):
         return self.__variables.get(name, default)
 
+    @property
     def variables(self):
-        for k, v in self.__variables.items():
-            yield k, v
+        return self.__variables;
 
-    def _value(self, raw_value):
-        return os.environ.get(raw_value[1:]) if (
-            raw_value[0] == '$') else raw_value
+    def _value(self, value, variables=None):
+        for match in self._re_variable.findall(value):
+            substitute = None
+            for vars in variables:
+                if match in vars:
+                    substitute = vars[match]
+                    break
+
+            if substitute:
+                if substitute[0] == '$':
+                    substitute = os.environ.get(substitute[1:])
+
+                value = value.replace(f"${match}", substitute)
+
+        return value
 
     def __str__(self):
         return str(self.__variables)
