@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}{{name}} Status Dashboard{% endblock %}
+{% block javascript %}
+<script>
+// attach tooltip events
+document.addEventListener("DOMContentLoaded", function(){
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function(element){
+        return new bootstrap.Tooltip(element);
+    });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+  <div class="wrapper" style="background-image: url(/static/images/w-logo-white.png)">
+    <div class="title">{{name}} Status Dashboard</a></div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="overall-status{% if overall_nominal %} nominal{% endif %}">
+      <span class="status nominal">{{name}} is in good health.</span>
+      <span class="status critical">{{name}} or dependent services may be struggling.</span>
+    </div>
+  </div>
+{% if notifications %}
+  <div class="row">
+    <div class="alert alert-info" role="alert">
+      {{notifications|safe}}
+    </div>
+  </div>
+{% endif %}
+{% for panel in panels %}
+  <div class="row panel{% if panel.overall_nominal %} nominal{% endif %}">
+    {{panel.name}}
+    {% if panel.description %}
+      <div class="status {% if panel.critical_description %}nominal{% endif %}">
+        {{panel.description}}
+      </div>
+    {% endif %}
+    {% if panel.critical_description %}
+      <div class="status critical">
+        {{panel.critical_description}}
+      </div>
+    {% endif %}
+  </div>
+  <div class="row">
+    {% for service in panel.services %}
+    {% include 'service.html' %}
+    {% endfor %}
+  </div>
+{% endfor %}
+  <div class="footer">
+    Updated: {{last_update}}
+  </div>
+</div>
+{% endblock %}

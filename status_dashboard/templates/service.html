@@ -1,0 +1,14 @@
+<div class="service{% if service.nominal %} nominal{% endif %}">
+  <div class="description">
+    <div class="name">
+      {{service.name}}
+      {%if service.description %}<i class="bi bi-info-circle" data-bs-toggle="tooltip" data-placement="top" title="{{service.description}}"></i>{% endif %}
+      {% if service.link %}<a href="{{service.link}}" title="Visit {{service.name}}"><i class="bi bi-box-arrow-up-right"></i></a>{% endif %}
+    </div>
+    <div class="status">{{service.status}}</div>
+  </div>
+  <div class="health">
+    <i class="nominal bi bi-check-circle-fill"></i>
+    <i class="critical bi bi-exclamation-circle-fill"></i>
+  </div>
+</div>
