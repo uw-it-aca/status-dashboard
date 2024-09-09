@@ -234,6 +234,14 @@ configmaps:
                       description: Critical
                     - limit: 0.98
                       description: Degraded
+                - name: MyGrad Service
+                  description: Source of graduate committee, degree, leave, petition information
+                  query: (sum(increase(restclient_response_status_code_bucket{exported_service="grad", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="grad", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
+                  threshold:
+                    - limit: 0.75
+                      description: Critical
+                    - limit: 0.98
+                      description: Degraded
                 - name: Library Account Service
                   description: Source of user library account information
                   query: (sum(increase(restclient_response_status_code_bucket{exported_service="libraries", job="myuw-prod-test", le=~"400(.0)?"}[$sample_period]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="libraries", job="myuw-prod-test", le=~"500(.0)?"}[$sample_period]) OR vector(1)))
