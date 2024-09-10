@@ -121,7 +121,7 @@ configmaps:
                       description: Critical
                     - limit: 0.99
                       description: Degraded
-            - name: Critical Dependency Status
+            - name: Critical Services
               description: Services required to provide MyUW access and content.
               critical_description: As not all critical services appear healthy, MyUW is likely unavailable and serving an error page.
               services:
@@ -160,7 +160,7 @@ configmaps:
                   description: Source of uwnetid password and subscription information
                   variables:
                     service: uwnetid
-            - name: Secondary Dependency Status
+            - name: Secondary Services
               description: Services providing specific MyUW content.
               critical_description: As not all services appear healthy, some MyUW content may be missing or displaying an error message.
               services:
