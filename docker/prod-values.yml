@@ -185,8 +185,8 @@ configmaps:
                   variables:
                     service: canvas
                 - <<: *web-service-block
-                  name: Instructor Course Dashboard (CoDa)
-                  description: Source of instructor course dashboard information
+                  name: Course Statistics Dashboard (CoDa)
+                  description: Source of current and historic student statistics information
                   variables:
                     service: coda
                 - <<: *web-service-block
