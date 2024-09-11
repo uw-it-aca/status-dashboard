@@ -159,9 +159,6 @@ html, body {
     color: #f00;
 }
 
-.service .health .status {
-    font-size: .9em;
-}
 .service.nominal .health .nominal {
     display: inline-block;
 }
@@ -170,6 +167,9 @@ html, body {
     display: none;
 }
 
+.service .health .status {
+    font-size: .75em;
+}
 .row {padding-top: 20px;}
 
 .footer {
