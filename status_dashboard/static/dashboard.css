@@ -132,9 +132,9 @@ html, body {
     margin-left: .25em;
 }
 
-.service .description .status {
-    font-size: .85em;
-    font-weight: 400;
+.service .description .desc {
+    font-size: .7em;
+    margin-left: .25em;
 }
 
 .service .health {
@@ -159,6 +159,9 @@ html, body {
     color: #f00;
 }
 
+.service .health .status {
+    font-size: .9em;
+}
 .service.nominal .health .nominal {
     display: inline-block;
 }
