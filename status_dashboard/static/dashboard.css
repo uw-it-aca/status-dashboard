@@ -134,7 +134,7 @@ html, body {
 }
 
 .service .description .desc {
-    font-size: .7em;
+    font-size: .8em;
     margin-left: .25em;
 }
 
@@ -146,7 +146,6 @@ html, body {
 .service .health {
     vertical-align: middle;
     text-align: center;
-    font-size: 1.5em;
     line-height: 3em;
 }
 
@@ -169,7 +168,7 @@ html, body {
 }
 
 .service .health .status {
-    font-size: .5em;
+    font-size: .8em;
 }
 .row {padding-top: 20px;}
 
