@@ -141,12 +141,13 @@ html, body {
 .service .health {
     width: 2.1em;
     float: right;
+    text-align: left;
+    margin-left: .25em;
 }
 
-.service .health {
-    vertical-align: middle;
-    text-align: center;
-    line-height: 3em;
+.service .health .status {
+    font-size: .8em;
+    margin-top: 1em;
 }
 
 .service .health .nominal {
@@ -167,9 +168,6 @@ html, body {
     display: none;
 }
 
-.service .health .status {
-    font-size: .8em;
-}
 .row {padding-top: 20px;}
 
 .footer {
