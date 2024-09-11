@@ -119,6 +119,7 @@ html, body {
 
 .service .description .name {
     font-weight: 600;
+    margin-top: 2em;
     margin-bottom: .2em;
 }
 
@@ -168,7 +169,7 @@ html, body {
 }
 
 .service .health .status {
-    font-size: .75em;
+    font-size: .5em;
 }
 .row {padding-top: 20px;}
 
