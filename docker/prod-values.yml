@@ -103,11 +103,11 @@ configmaps:
           variables:
             application: myuw
           panels:
-            - name: MyUW Status
+            - name: MyUW Service
               services:
                 # list of application components and the prometheus query to determine health
                 - name: MyUW
-                  description: UW student and faculty information portal
+                  description: UW enterprise portal
                   link: https://test.my.uw.edu
                   #
                   # query should return a scalar value to test the threshold values against
@@ -134,89 +134,88 @@ configmaps:
                     service: kws
                 - <<: *web-service-block
                   name: Group Web Service (GWS)
-                  description: Required for user affiliation information
+                  description: Required for user affiliations
                   level: Blocker
                   variables:
                     service: gws
                 - <<: *web-service-block
                   name: Person Web Service (PWS)
-                  description: Required for specific user information
+                  description: Required for user profile
                   level: Blocker
                   variables:
                     service: pws
                 - <<: *web-service-block
                   name: Student Web Service (SWS)
-                  description: Source of course, personal enrollment, notice, and registration information
+                  description: Source of course, student enrollments, notices, and registrations
                   variables:
                     service: sws
                 - <<: *web-service-block
                   name: IdP OIDC Keyset
-                  description: Required for mobile application authentication
+                  description: Required for mobile-app authentication
                   level: Blocker
                   variables:
                     service: uwidp
                 - <<: *web-service-block
                   name: UWNetID Web Service
-                  description: Source of uwnetid password and subscription information
+                  description: Source of uwnetid password and subscriptions
                   variables:
                     service: uwnetid
             - name: Secondary Services
-              description: Services providing specific MyUW content.
+              description: Providing specific MyUW content
               critical_description: As not all services appear healthy, some MyUW content may be missing or displaying an error message.
               services:
                 - <<: *web-service-block
                   name: SDB Applicant Service
-                  description: Source of undergrad application information
+                  description: Source of undergraduate application
                   variables:
                     service: sdbmyuw
                 - <<: *web-service-block
                   name: MyPlan Auth Service
-                  description: Source of MyPlan authentication
+                  description: Support MyPlan authentication
                   variables:
                     service: myplan_auth
                 - <<: *web-service-block
                   name: MyPlan Service
-                  description: Source of MyPlan course registration information
+                  description: Source of student course registration plan
                   variables:
                     service: myplan
                 - <<: *web-service-block
                   name: Canvas Course Service
-                  description: Source of Canvas course information
+                  description: Source of course data on Canvas LMS
                   variables:
                     service: canvas
                 - <<: *web-service-block
                   name: Course Statistics Dashboard (CoDa)
-                  description: Source of current and historic student statistics information
+                  description: Source of current and historic student statistics
                   variables:
                     service: coda
                 - <<: *web-service-block
                   name: Gradepage Service
-                  description: Source of grade submission information
+                  description: Source of grade submission status
                   variables:
                     service: gradepage
                 - <<: *web-service-block
                   name: MailMan Service
-                  description: Source of instructor class mailing list request data
+                  description: Source of instructor class mailing list request
                   variables:
                     service: mailman
                 - <<: *web-service-block
                   name: Housing and Food Services (HFS)
-                  description: Provides employee/student Husky card, student housing and dining balance information
-                  variables:
+                  description: Source of employee/student Husky card, student housing and dining balances
                     service: hfs
                 - <<: *web-service-block
                   name: MyGrad Service
-                  description: Source of graduate committee, degree, leave, petition information
+                  description: Source of committee, degree, leave, petition of graduate students
                   variables:
                     service: grad
                 - <<: *web-service-block
                   name: Library Account Service
-                  description: Source of user library account information
+                  description: Source of library fines, holds, loaned items, due date
                   variables:
                     service: libraries
                 - <<: *web-service-block
                   name: Library Curriculum Service
-                  description: Source of library Curriculum information
+                  description: Source of library curriculum subject guide
                   variables:
                     service: libcurric
                 - <<: *web-service-block
@@ -226,7 +225,7 @@ configmaps:
                     service: book
                 - <<: *web-service-block
                   name: Iasystem Instructor Course Evaluation Services
-                  description: Source of course evaluation information
+                  description: Source of course evaluation submission status
                   variables:
                     service: iasystem
                 - <<: *web-service-block
