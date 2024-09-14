@@ -34,7 +34,6 @@ html, body {
 
 .overall-status .status {
     font-size: 1.2em;
-    font-weight: 500;
     line-height: 2em;
     width: 50%;
     color: white;
@@ -77,7 +76,7 @@ html, body {
 
 .panel div {
     font-size: .6em;
-    font-weight: 300;
+    font-weight: 400;
 }
 
 .panel div.critical {
@@ -99,10 +98,10 @@ html, body {
 .service {
     border: 1px solid #ff8080;
     border-radius: 10px;
-    width: 21.5em;
+    width: 20em;
     min-height: 3em;
     margin: 0 20px 20px 0;
-    padding: 0;
+    padding: 5px;
     background-color: #ffefef;
 }
 
@@ -113,7 +112,7 @@ html, body {
 
 .service .description {
     padding: 8px 10px;
-    width: 18em;
+    width: 15em;
     float: left;
 }
 
@@ -132,21 +131,21 @@ html, body {
     margin-left: .25em;
 }
 
-.service .description .status {
-    font-size: .85em;
-    font-weight: 400;
+.service .description .desc {
+    font-size: .9em;
+    margin-left: .25em;
 }
 
 .service .health {
-    width: 2.1em;
+    padding: 8px 10px;
+    width: 4em;
     float: right;
+    text-align: left;
 }
 
-.service .health {
-    vertical-align: middle;
-    text-align: center;
-    font-size: 1.5em;
-    line-height: 3em;
+.service .health .status {
+    font-size: .9em;
+    margin-top: 2px;
 }
 
 .service .health .nominal {
