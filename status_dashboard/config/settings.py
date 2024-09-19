@@ -1,7 +1,7 @@
 # Copyright 2024 UW-IT, University of Washington
 # SPDX-License-Identifier: Apache-2.0
 
-from yaml import safe_load
+from yaml import safe_load, YAMLError
 import re
 import os
 import logging
@@ -18,7 +18,7 @@ class _Settings:
         with open(config_file, "r") as file:
             try:
                 config = safe_load(file)
-            except yaml.YAMLError as ex:
+            except YAMLError as ex:
                 logger.error(f"config file {config_file} error: {ex}")
                 return
 
