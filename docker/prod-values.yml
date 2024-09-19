@@ -202,6 +202,7 @@ configmaps:
                 - <<: *web-service-block
                   name: Housing and Food Services (HFS)
                   description: Source of employee/student Husky card, student housing and dining balances
+                  variables:
                     service: hfs
                 - <<: *web-service-block
                   name: MyGrad Service
