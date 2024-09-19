@@ -111,7 +111,7 @@ html, body {
 .service .info {
     padding-top: 6px;
     display: inline-block;
-    width: 17em;
+    width: 16.5em;
     height: 100%;
 }
 
@@ -149,6 +149,7 @@ html, body {
 }
 
 .service .health {
+    font-size: 1.5em;
     display: inline-block;
     height: 100%;
     text-align: center;
