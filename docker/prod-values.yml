@@ -192,7 +192,7 @@ configmaps:
                       description: Degraded
             - name: Secondary Services
               description: Providing specific MyUW content
-              critical_description: Some users may get an error message on specific content card
+              critical_description: Some users may get an error message on specific content card.
               services:
                 - <<: *web-service-block
                   name: SDB Applicant Service
