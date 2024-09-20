@@ -87,9 +87,9 @@ configmaps:
       web-service-block: &web-service-block
         query: (sum(increase(restclient_response_status_code_bucket{exported_service="${service}", job="${application}-prod-${application_instance}", le=~"400(.0)?"}[${sample_period}]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="${service}", job="${application}-prod-${application_instance}", le=~"500(.0)?"}[${sample_period}]) OR vector(1)))
         threshold:
-          - limit: 0.75
+          - limit: 0.55
             description: Critical
-          - limit: 0.99
+          - limit: 0.75
             description: Degraded
       dashboards:
         # application's display name
@@ -117,13 +117,13 @@ configmaps:
                   # query results less than the threshold value indicates the service is struggling and displays the corresponding description
                   #
                   threshold:
-                    - limit: 0.75
+                    - limit: 0.65
                       description: Critical
-                    - limit: 0.99
+                    - limit: 0.85
                       description: Degraded
             - name: Critical Services
               description: Services required to provide MyUW access and content.
-              critical_description: As not all critical services appear healthy, MyUW is likely unavailable and serving an error page.
+              critical_description: MyUW is likely unavailable and serving an error page.
               services:
                 # A list of dependent services and the query to determine its healthiness
                 - <<: *web-service-block
@@ -162,7 +162,7 @@ configmaps:
                     service: uwnetid
             - name: Secondary Services
               description: Services providing specific contents on MyUW
-              critical_description: As not all services appear healthy, some MyUW content may be missing or displaying an error message.
+              critical_description: Some users may get an error message on specific content card.
               services:
                 - <<: *web-service-block
                   name: SDB Applicant Service
