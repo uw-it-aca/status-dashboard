@@ -132,34 +132,64 @@ configmaps:
                   level: Blocker
                   variables:
                     service: kws
+                  threshold:
+                    - limit: 0.65
+                      description: Critical
+                    - limit: 0.9
+                      description: Degraded
                 - <<: *web-service-block
                   name: Group Web Service (GWS)
                   description: Required for user affiliations
                   level: Blocker
                   variables:
                     service: gws
+                  threshold:
+                    - limit: 0.65
+                      description: Critical
+                    - limit: 0.9
+                      description: Degraded
                 - <<: *web-service-block
                   name: Person Web Service (PWS)
                   description: Required for user profile
                   level: Blocker
                   variables:
                     service: pws
+                  threshold:
+                    - limit: 0.65
+                      description: Critical
+                    - limit: 0.9
+                      description: Degraded
                 - <<: *web-service-block
                   name: Student Web Service (SWS)
                   description: Source of course, student enrollments, notices, and registrations
                   variables:
                     service: sws
+                  threshold:
+                    - limit: 0.65
+                      description: Critical
+                    - limit: 0.9
+                      description: Degraded
                 - <<: *web-service-block
                   name: IdP OIDC Keyset
                   description: Required for mobile-app authentication
                   level: Blocker
                   variables:
                     service: uwidp
+                  threshold:
+                    - limit: 0.65
+                      description: Critical
+                    - limit: 0.9
+                      description: Degraded
                 - <<: *web-service-block
                   name: UWNetID Web Service
                   description: Source of uwnetid password and subscriptions
                   variables:
                     service: uwnetid
+                  threshold:
+                    - limit: 0.65
+                      description: Critical
+                    - limit: 0.9
+                      description: Degraded
             - name: Secondary Services
               description: Providing specific MyUW content
               critical_description: As not all services appear healthy, some MyUW content may be missing or displaying an error message.
