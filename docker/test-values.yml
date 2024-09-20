@@ -87,9 +87,9 @@ configmaps:
       web-service-block: &web-service-block
         query: (sum(increase(restclient_response_status_code_bucket{exported_service="${service}", job="${application}-prod-${application_instance}", le=~"400(.0)?"}[${sample_period}]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="${service}", job="${application}-prod-${application_instance}", le=~"500(.0)?"}[${sample_period}]) OR vector(1)))
         threshold:
-          - limit: 0.75
+          - limit: 0.55
             description: Critical
-          - limit: 0.99
+          - limit: 0.75
             description: Degraded
       dashboards:
         # application's display name
@@ -117,9 +117,9 @@ configmaps:
                   # query results less than the threshold value indicates the service is struggling and displays the corresponding description
                   #
                   threshold:
-                    - limit: 0.75
+                    - limit: 0.65
                       description: Critical
-                    - limit: 0.99
+                    - limit: 0.85
                       description: Degraded
             - name: Critical Services
               description: Services required to provide MyUW access and content.
