@@ -123,7 +123,7 @@ configmaps:
                       description: Degraded
             - name: Critical Services
               description: Services required to provide MyUW access and content.
-              critical_description: As not all critical services appear healthy, MyUW is likely unavailable and serving an error page.
+              critical_description: MyUW is likely unavailable and serving an error page.
               services:
                 # A list of dependent services and the query to determine its healthiness
                 - <<: *web-service-block
@@ -192,7 +192,7 @@ configmaps:
                       description: Degraded
             - name: Secondary Services
               description: Providing specific MyUW content
-              critical_description: As not all services appear healthy, some MyUW content may be missing or displaying an error message.
+              critical_description: Some users may get an error message on specific content card
               services:
                 - <<: *web-service-block
                   name: SDB Applicant Service
