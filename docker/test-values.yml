@@ -162,7 +162,7 @@ configmaps:
                     service: uwnetid
             - name: Secondary Services
               description: Services providing specific contents on MyUW
-              critical_description: Some users may get an error message on specific content card.
+              critical_description: The corresponding content card/page is likely unavailable and showing an error massage.
               services:
                 - <<: *web-service-block
                   name: SDB Applicant Service
