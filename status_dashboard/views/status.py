@@ -110,6 +110,7 @@ class StatusRequest(RequestHandler):
             service_context.append({
                 "name": service.get('name', ""),
                 "description": service.get('description', ""),
+                "critical_description": service.get('critical_description', ""),
                 "link": service.get('link', ""),
                 "nominal": health,
                 "status": status

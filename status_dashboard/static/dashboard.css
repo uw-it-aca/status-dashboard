@@ -99,9 +99,7 @@ html, body {
     border: 1px solid #ff8080;
     border-radius: 10px;
     width: 20em;
-    min-height: 3em;
     margin: 0 20px 20px 0;
-    padding: 5px;
     background-color: #ffefef;
 }
 
@@ -110,37 +108,52 @@ html, body {
     border-color: lightgray;
 }
 
-.service .description {
-    padding: 8px 10px;
-    width: 15em;
-    float: left;
+.service .info {
+    padding-top: 6px;
+    display: inline-block;
+    width: 16.5em;
+    height: 100%;
 }
 
-.service .description .name {
+.service .info .name {
     font-weight: 600;
     margin-bottom: .2em;
 }
 
-.service .description .name > a {
+.service .info .name a {
     font-size: .9em;
     margin-left: .25em;
 }
 
-.service .description .name > i {
+.service .info .name a i {
     font-size: .9em;
     margin-left: .25em;
 }
 
-.service .description .desc {
+.service .info .description.critical .status {
+    color: #ff1818;
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.service .info .description.critical {
     font-size: .9em;
-    margin-left: .25em;
+}
+
+.service.nominal .info .description.critical {
+    display: none;
+}
+
+.service.nominal .info .description.nominal {
+    display: inline-block;
 }
 
 .service .health {
-    padding: 8px 10px;
-    width: 4em;
-    float: right;
-    text-align: left;
+    font-size: 1.5em;
+    display: inline-block;
+    height: 100%;
+    text-align: center;
+    vertical-align: middle;
 }
 
 .service .health .status {

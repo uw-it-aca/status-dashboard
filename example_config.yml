@@ -38,42 +38,48 @@ dashboards:
               - limit: 0.99
                 description: Degraded
       - name: Critical Services
-        description: Services required to provide MyUW access and content.
-        critical_description: As not all critical services appear healthy, MyUW is likely unavailable and serving an error page.
+        #description: Services required to provide MyUW access and content.
+        critical_description: Some services show poor health.  MyUW is likely unavailable.
         services:
           # list of dependent services and the test to determine its healthiness
           - <<: *web-service-block
             name: Student Web Service
-            description: Service course and registration information
+            #description: Service course and registration information
+            critical_description: Course and registration information unavailble.  Login likely failing.
             variables:
                service: sws
           - <<: *web-service-block
             name: Person Web Service
-            description: Service supplying person information
+            #description: Service supplying person information
+            critical_description: Person information unavailable. MyUW login likely failing.
             variables:
                service: pws
-      - name: Dependent Services
-        description: Services providing specific MyUW content.
+      - name: Services Providing Content
+        #description: Services providing specific MyUW content.
         critical_description: As not all services appear healthy, some MyUW content may be missing or displaying an error message.
         services:
           - <<: *web-service-block
-            name: UWNetID Web Service
-            description: Service supplying campus service information
+            name: UWNetID Information
+            #description: Service supplying campus service information
+            critical_description: Some service information may be incomplete
             variables:
                service: uwnetid
           - <<: *web-service-block
-            name: Canvas Web Services
-            description: Service supplying course information
+            name: UW Canvas
+            #description: Service supplying course information
+            critical_description: Some course information may be incomplete
             variables:
                service: canvas
           - <<: *web-service-block
-            name: Calendar Web Service
-            description: Service supplying event information
+            name: UW Calendar
+            #description: Service supplying event information
+            critical_description: Event information may not be displayed
             link: https://www.washington.edu/calendar/
             variables:
                service: calendar
           - <<: *web-service-block
             name: Housing and Food Services
-            description: Husky card information
+            #description: Husky card information
+            critical_description: Husky card information may not be displayed
             variables:
                service: hfs
