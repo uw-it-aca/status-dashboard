@@ -108,7 +108,7 @@ configmaps:
                 # list of application components and the prometheus query to determine health
                 - name: MyUW
                   description: UW enterprise portal
-                  link: https://test.my.uw.edu
+                  link: https://my.uw.edu
                   #
                   # query should return a scalar value to test the threshold values against
                   #
