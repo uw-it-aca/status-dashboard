@@ -22,6 +22,8 @@ ingress:
 
 repo: status-dashboard
 instance: prod
+namespace:
+  enabled: true
 
 containerPort: 8000
 
