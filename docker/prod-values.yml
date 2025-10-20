@@ -84,10 +84,10 @@ configmaps:
       variables:
         prometheus_api_server: http://prometheus-k8s.mci-monitoring.svc.cluster.local:9090
         application_instance: $APPLICATION_INSTANCE
-        sample_period: 10m
+        sample_period: 2m
         timezone: US/Pacific
       web-service-block: &web-service-block
-        query: (sum(increase(restclient_response_status_code_bucket{exported_service="${service}", job="${application}-prod-${application_instance}", le=~"400(.0)?"}[${sample_period}]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="${service}", job="${application}-prod-${application_instance}", le=~"500(.0)?"}[${sample_period}]) OR vector(1)))
+        query: (sum(increase(restclient_response_status_code_bucket{exported_service="${service}", namespace="${application}-${application_instance}", le=~"400(.0)?"}[${sample_period}]) OR vector(1))) / (sum(increase(restclient_response_status_code_bucket{exported_service="${service}", namespace="${application}-${application_instance}", le=~"500(.0)?"}[${sample_period}]) OR vector(1)))
         threshold:
           - limit: 0.65
             description: Critical
@@ -114,7 +114,7 @@ configmaps:
                   #
                   # query should return a scalar value to test the threshold values against
                   #
-                  query: (sum(increase(nginx_ingress_controller_requests{exported_service="myuw-prod-${application_instance}",controller_class=~"k8s.io/ingress-nginx",namespace=~"ingress-nginx",status=~"([123]..|40[134]|499|543)"}[${sample_period}]) OR vector(1))) / (sum(increase(nginx_ingress_controller_requests{exported_service="myuw-prod-${application_instance}",controller_class=~"k8s.io/ingress-nginx",namespace=~"ingress-nginx"}[${sample_period}]) OR vector(1)))
+                  query: (sum(rate(nginx_ingress_controller_requests{controller_class="k8s.io/ingress-nginx",ingress=~"^${application}-${application_instance}.*",exported_service="${application}",exported_namespace="${application}-${application_instance}",status=~"([123]..|40[134]|499|543)"}[${sample_period}])) OR vector(1)) / (sum(rate(nginx_ingress_controller_requests{controller_class="k8s.io/ingress-nginx",ingress=~"^${application}-${application_instance}.*",exported_service="${application}",exported_namespace="${application}-${application_instance}"}[${sample_period}])) OR vector(1))
                   #
                   # query results less than the threshold value indicates the service is struggling and displays the corresponding description
                   #
@@ -279,8 +279,8 @@ configmaps:
                 # list of application components and the prometheus query to determine health
                 - name: Provision Request Tool
                   description: Service provisioning and lifecycle manager
-                  link: https://test.provision.uw.edu
-                  query: (sum(increase(nginx_ingress_controller_requests{exported_service="${application}-prod-${application_instance}",controller_class=~"k8s.io/ingress-nginx",namespace=~"ingress-nginx",status=~"([123]..|40[134]|499|543)"}[${sample_period}]) OR vector(1))) / (sum(increase(nginx_ingress_controller_requests{exported_service="${application}-prod-${application_instance}",controller_class=~"k8s.io/ingress-nginx",namespace=~"ingress-nginx"}[${sample_period}]) OR vector(1)))
+                  link: https://provision.uw.edu
+                  query: (sum(rate(nginx_ingress_controller_requests{controller_class="k8s.io/ingress-nginx",ingress=~"^${application}-${application_instance}.*",exported_service="${application}",exported_namespace="${application}-${application_instance}",status=~"([123]..|40[134]|499|543)"}[${sample_period}])) OR vector(1)) / (sum(rate(nginx_ingress_controller_requests{controller_class="k8s.io/ingress-nginx",ingress=~"^${application}-${application_instance}.*",exported_service="${application}",exported_namespace="${application}-${application_instance}"}[${sample_period}])) OR vector(1))
                   threshold:
                     - limit: 0.75
                       description: Critical
