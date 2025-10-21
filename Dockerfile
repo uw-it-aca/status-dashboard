@@ -1,7 +1,7 @@
 FROM python:3.10
 
-ENV LOG_FILE stdout
-ENV PYTHONUNBUFFERED 1
+ENV LOG_FILE=stdout
+ENV PYTHONUNBUFFERED=1
 
 RUN groupadd -r acait && useradd -r -g acait acait
 
