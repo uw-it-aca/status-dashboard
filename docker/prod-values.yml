@@ -87,7 +87,7 @@ configmaps:
         sample_period: 10m
         timezone: US/Pacific
       web-service-block: &web-service-block
-        query: sum(rate(restclient_response_status_code_bucket{exported_service="${service}",namespace="${application}-${application_instance}",le=~"400(.0)?"}[${sample_period}])) / sum(rate(restclient_response_status_code_bucket{exported_service="${service}",namespace="${application}-${application_instance}",le=~"500(.0)?"}[${sample_period}]))
+        query: (sum(rate(restclient_response_status_code_bucket{exported_service="${service}",namespace="${application}-${application_instance}",le=~"400(.0)?"}[${sample_period}])) / sum(rate(restclient_response_status_code_bucket{exported_service="${service}",namespace="${application}-${application_instance}",le=~"500(.0)?"}[${sample_period}]))) OR on() vector(1)
         threshold:
           - limit: 0.65
             description: Critical
