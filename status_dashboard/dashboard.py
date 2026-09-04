@@ -1,4 +1,4 @@
-# Copyright 2025 UW-IT, University of Washington
+# Copyright 2026 UWIT, University of Washington
 # SPDX-License-Identifier: Apache-2.0
 
 """
@@ -9,11 +9,11 @@ is defined in the DASHBOARD_CONFIG environment variable.  An
 example configuration file can be found in the repository.
 """
 
-from server import dashboard_server
-import sys
-import os
 import logging
+import os
+import sys
 
+from server import dashboard_server
 
 # setup basic logging
 logging.basicConfig(level=logging.DEBUG if (
@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 if __name__ == '__main__':
     try:
         # launch dashboard server
-        dashboard_server(int(os.environ.get("PORT", 8000)))
+        dashboard_server(int(os.environ.get("PORT", "8000")))
     except Exception as e:
-        logger.exception(e)
+        logger.exception()
         logger.critical(e)
