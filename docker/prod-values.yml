@@ -20,6 +20,15 @@ ingress:
     cert-manager.io/cluster-issuer: letsencrypt
     nginx.ingress.kubernetes.io/limit-rps: "10"
 
+gateway:
+  enabled: true
+  hostnames:
+    - status.dnatls.uw.edu
+  rateLimit:
+    tokens: 10
+    tokensPerFill: 10
+    fillInterval: 1s
+
 repo: status-dashboard
 instance: prod
 namespace:
