@@ -1,11 +1,11 @@
-# Copyright 2025 UW-IT, University of Washington
+# Copyright 2026 UWIT, University of Washington
 # SPDX-License-Identifier: Apache-2.0
 
-from yaml import safe_load, YAMLError
-import re
-import os
 import logging
+import os
+import re
 
+from yaml import YAMLError, safe_load
 
 logger = logging.getLogger(__name__)
 

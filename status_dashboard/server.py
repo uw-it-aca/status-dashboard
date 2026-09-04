@@ -1,19 +1,19 @@
-# Copyright 2025 UW-IT, University of Washington
+# Copyright 2026 UWIT, University of Washington
 # SPDX-License-Identifier: Apache-2.0
 
 """
 Dashboard initialization and tornado server launch
 """
 
-from status_dashboard.config import settings
-from status_dashboard.views.status import StatusRequest
-from status_dashboard.metrics import MetricsHandler
-from tornado.web import Application, StaticFileHandler
-from pathlib import Path
 import asyncio
 import logging
-import os
+from pathlib import Path
 
+from tornado.web import Application, StaticFileHandler
+
+from status_dashboard.config import settings
+from status_dashboard.metrics import MetricsHandler
+from status_dashboard.views.status import StatusRequest
 
 logger = logging.getLogger(__name__)
 

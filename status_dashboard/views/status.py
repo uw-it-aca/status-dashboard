@@ -1,19 +1,19 @@
-# Copyright 2025 UW-IT, University of Washington
+# Copyright 2026 UWIT, University of Washington
 # SPDX-License-Identifier: Apache-2.0
 
-from status_dashboard.config import settings
-from status_dashboard.metrics import request_counter
-from status_dashboard.dao.prometheus import Prometheus
-from jinja2 import Environment, PackageLoader, select_autoescape
-from tornado.web import RequestHandler
-from urllib import request
-from datetime import datetime, timedelta
-import asyncio
-import pytz
+import logging
 import os
 import re
-import logging
+from datetime import datetime, timedelta
+from urllib import request
+from zoneinfo import ZoneInfo
 
+from jinja2 import Environment, PackageLoader, select_autoescape
+from tornado.web import RequestHandler
+
+from status_dashboard.config import settings
+from status_dashboard.dao.prometheus import Prometheus
+from status_dashboard.metrics import request_counter
 
 logger = logging.getLogger(__name__)
 jinja2_env = Environment(
@@ -30,10 +30,11 @@ class StatusRequest(RequestHandler):
     def get(self):
         app_path = self.dashboard.get('app_path')
         app_name = self.dashboard.get('app_name')
+        app_timezone = ZoneInfo(settings.get('timezone', 'America/Los_Angeles'))
         app_notification_url = self.dashboard.get('app_notification_url')
         _varable_name = re.compile(r'\$([a-z_]+)')
 
-        now = datetime.now()
+        now = datetime.now(app_timezone)
 
         request_counter(f"{app_path}")
 
@@ -44,9 +45,8 @@ class StatusRequest(RequestHandler):
         if timeout:
             try:
                 stat = os.stat(cache_file)
-                datetime_mtime = datetime.fromtimestamp(stat.st_mtime)
-                datetime_expires = datetime_mtime + timedelta(
-                    seconds=(timeout * 60))
+                datetime_mtime = datetime.fromtimestamp(stat.st_mtime, tz=app_timezone)
+                datetime_expires = datetime_mtime + timedelta(seconds=(timeout * 60))
                 if datetime_expires > now:
                     with open(cache_file, "r") as f:
                         self.write(f.read())
@@ -55,19 +55,15 @@ class StatusRequest(RequestHandler):
                 pass
 
         # no cached file, get to queryin'
-        app_timezone = pytz.timezone(settings.get('timezone', 'US/Pacific'))
         context = {
             "name": app_name,
-            "notifications": self._load_app_notifications(
-                app_notification_url),
-            "panels": self._load_panel_context(
-                self.dashboard.get('panels', [])),
-            "last_update": now.astimezone(
-                app_timezone).strftime("%-I:%M:%S %p %Y-%m-%d %Z")
+            "notifications": self._load_app_notifications(app_notification_url),
+            "panels": self._load_panel_context(self.dashboard.get('panels', [])),
+            "last_update": now.strftime("%-I:%M:%S %p %Y-%m-%d %Z")
         }
 
         context["overall_nominal"] = all(
-            [s['nominal'] for p in context['panels'] for s in p["services"]])
+            s['nominal'] for p in context['panels'] for s in p["services"])
         template = jinja2_env.get_template("dashboard.html")
         html = template.render(context)
 
@@ -88,7 +84,7 @@ class StatusRequest(RequestHandler):
                 'description': panel.get('description', ''),
                 'critical_description': panel.get('critical_description', ''),
                 'services': services,
-                'overall_nominal': all([s['nominal'] for s in services])
+                'overall_nominal': all(s['nominal'] for s in services)
             })
 
         return panel_context
