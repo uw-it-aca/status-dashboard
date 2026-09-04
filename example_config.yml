@@ -5,7 +5,7 @@ variables:
   prometheus_api_server: http://prometheus-server:9090
   application_instance: $APPLICATION_INSTANCE
   sample_period: 15m
-  timezone: US/Pacific
+  timezone: America/Los_Angeles
 web-service-block: &web-service-block
     query: sum(dependent_metric1{label1=value,label2=${application}-${application_instance},label3=${service}}[${sample_period}]) / sum(dependent_metric1{label1=value,label2=${application}-${application_instance},label3=${service}}[${sample_period}])
     threshold:
