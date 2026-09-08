@@ -1,13 +1,12 @@
-# Copyright 2025 UW-IT, University of Washington
+# Copyright 2026 UWIT, University of Washington
 # SPDX-License-Identifier: Apache-2.0
 
 """
 Functions supporting Prometheus metrics
 """
-from prometheus_client import Counter, REGISTRY
+from prometheus_client import REGISTRY, Counter
 from prometheus_client.exposition import choose_encoder
 from tornado.web import RequestHandler
-
 
 # prepare metrics
 try:

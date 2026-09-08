@@ -3,6 +3,15 @@ autoscaling:
   minReplicas: 1
   maxReplicas: 2
 
+gateway:
+  enabled: true
+  hostnames:
+    - status-test.dnatls.uw.edu
+  rateLimit:
+    tokens: 10
+    tokensPerFill: 10
+    fillInterval: 1s
+
 ingress:
   enabled: true
   type: nginx
@@ -85,7 +94,7 @@ configmaps:
         prometheus_api_server: http://prometheus-k8s.mci-monitoring.svc.cluster.local:9090
         application_instance: $APPLICATION_INSTANCE
         sample_period: 10m
-        timezone: US/Pacific
+        timezone: America/Los_Angeles
       web-service-block: &web-service-block
         query: (sum(rate(restclient_response_status_code_bucket{exported_service="${service}",namespace="${application}-${application_instance}",le=~"400(.0)?"}[${sample_period}])) / sum(rate(restclient_response_status_code_bucket{exported_service="${service}",namespace="${application}-${application_instance}",le=~"500(.0)?"}[${sample_period}]))) OR on() vector(1)
         threshold:
