@@ -97,8 +97,8 @@ configmaps:
           variables:
             application: myuw
           panels:
-            - name: MyUW Service
-              services:
+#            - name: MyUW Service
+#              services:
                 # list of application components and the prometheus query to determine health
 #                - name: MyUW
 #                  description: UW enterprise portal
