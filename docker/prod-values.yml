@@ -3,22 +3,14 @@ autoscaling:
   minReplicas: 2
   maxReplicas: 8
 
-ingress:
+gateway:
   enabled: true
-  type: nginx
-  tls:
-    dev-status-dashboard:
-      secretName: status.dnatls.uw.edu-ingress-cert
-      hosts:
-        - status.dnatls.uw.edu
-  hosts:
-    dev-status-dashboard:
-      host: status.dnatls.uw.edu
-      paths:
-        - "/"
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
-    nginx.ingress.kubernetes.io/limit-rps: "10"
+  hostnames:
+    - status.dnatls.uw.edu
+  rateLimit:
+    tokens: 10
+    tokensPerFill: 10
+    fillInterval: 1s
 
 gateway:
   enabled: true
@@ -114,24 +106,24 @@ configmaps:
           variables:
             application: myuw
           panels:
-            - name: MyUW Service
-              services:
+#            - name: MyUW Service
+#              services:
                 # list of application components and the prometheus query to determine health
-                - name: MyUW
-                  description: UW enterprise portal
-                  link: https://my.uw.edu
+#                - name: MyUW
+#                  description: UW enterprise portal
+#                  link: https://my.uw.edu
                   #
                   # query should return a scalar value to test the threshold values against
                   #
-                  query: sum(rate(nginx_ingress_controller_requests{controller_class="k8s.io/ingress-nginx",ingress=~"^${application}-${application_instance}.*",exported_service="${application}",exported_namespace="${application}-${application_instance}",status=~"([123]..|40[134]|499|543)"}[${sample_period}])) / sum(rate(nginx_ingress_controller_requests{controller_class="k8s.io/ingress-nginx",ingress=~"^${application}-${application_instance}.*",exported_service="${application}",exported_namespace="${application}-${application_instance}"}[${sample_period}]))
+#                  query: sum(rate(nginx_ingress_controller_requests{controller_class="k8s.io/ingress-nginx",ingress=~"^${application}-${application_instance}.*",exported_service="${application}",exported_namespace="${application}-${application_instance}",status=~"([123]..|40[134]|499|543)"}[${sample_period}])) / sum(rate(nginx_ingress_controller_requests{controller_class="k8s.io/ingress-nginx",ingress=~"^${application}-${application_instance}.*",exported_service="${application}",exported_namespace="${application}-${application_instance}"}[${sample_period}]))
                   #
                   # query results less than the threshold value indicates the service is struggling and displays the corresponding description
                   #
-                  threshold:
-                    - limit: 0.7
-                      description: Critical
-                    - limit: 0.9
-                      description: Degraded
+#                  threshold:
+#                    - limit: 0.7
+#                      description: Critical
+#                    - limit: 0.9
+#                      description: Degraded
             - name: Critical Services
               description: Services required to provide MyUW access and content.
               critical_description: MyUW is likely unavailable and serving an error page.
