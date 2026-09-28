@@ -106,24 +106,6 @@ configmaps:
           variables:
             application: myuw
           panels:
-#            - name: MyUW Service
-#              services:
-                # list of application components and the prometheus query to determine health
-#                - name: MyUW
-#                  description: UW enterprise portal
-#                  link: https://my.uw.edu
-                  #
-                  # query should return a scalar value to test the threshold values against
-                  #
-#                  query: sum(rate(nginx_ingress_controller_requests{controller_class="k8s.io/ingress-nginx",ingress=~"^${application}-${application_instance}.*",exported_service="${application}",exported_namespace="${application}-${application_instance}",status=~"([123]..|40[134]|499|543)"}[${sample_period}])) / sum(rate(nginx_ingress_controller_requests{controller_class="k8s.io/ingress-nginx",ingress=~"^${application}-${application_instance}.*",exported_service="${application}",exported_namespace="${application}-${application_instance}"}[${sample_period}]))
-                  #
-                  # query results less than the threshold value indicates the service is struggling and displays the corresponding description
-                  #
-#                  threshold:
-#                    - limit: 0.7
-#                      description: Critical
-#                    - limit: 0.9
-#                      description: Degraded
             - name: Critical Services
               description: Services required to provide MyUW access and content.
               critical_description: MyUW is likely unavailable and serving an error page.
@@ -275,18 +257,6 @@ configmaps:
           variables:
             application: prt
           panels:
-            - name: Provision Request Tool (PRT) Status
-              services:
-                # list of application components and the prometheus query to determine health
-                - name: Provision Request Tool
-                  description: Service provisioning and lifecycle manager
-                  link: https://provision.uw.edu
-                  query: sum(rate(nginx_ingress_controller_requests{controller_class="k8s.io/ingress-nginx",ingress=~"^${application}-${application_instance}.*",exported_service="${application}",exported_namespace="${application}-${application_instance}",status=~"([123]..|40[134]|499|543)"}[${sample_period}])) / sum(rate(nginx_ingress_controller_requests{controller_class="k8s.io/ingress-nginx",ingress=~"^${application}-${application_instance}.*",exported_service="${application}",exported_namespace="${application}-${application_instance}"}[${sample_period}]))
-                  threshold:
-                    - limit: 0.75
-                      description: Critical
-                    - limit: 0.99
-                      description: Degraded
             - name: Dependent Service Status
               description: Services used for provisioning
               services:
