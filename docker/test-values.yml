@@ -159,11 +159,6 @@ configmaps:
               critical_description: The corresponding content card/page is likely unavailable and showing an error massage.
               services:
                 - <<: *web-service-block
-                  name: SDB Applicant Service
-                  description: Source of undergraduate application
-                  variables:
-                    service: sdbmyuw
-                - <<: *web-service-block
                   name: MyPlan Auth Service
                   description: Support MyPlan authentication
                   variables:
